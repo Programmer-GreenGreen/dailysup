@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/error",
                         "/api/account/sign-up",
                         "/api/account/log-in",
-                        "/api/echo"
+                        "/api/echo/**"
                 )
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
