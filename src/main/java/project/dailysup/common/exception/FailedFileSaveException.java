@@ -1,6 +1,6 @@
 package project.dailysup.common.exception;
 
-public class FailedFileSaveException extends RuntimeException {
+public class FailedFileSaveException extends InternalErrorException {
     public FailedFileSaveException() {
         super();
     }

@@ -1,4 +1,4 @@
-package project.dailysup.common.exception;
+package project.dailysup.common.exceptionhandler;
 
 
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import project.dailysup.common.exception.ExceptionResponse;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,6 @@ public class NotExpectedExceptionHandler {
                 new ExceptionResponse(LocalDateTime.now(), "Server Error occurred", request.getDescription(false));
         log.error("Unhandled Error occur, message: {} ",e.getMessage());
 
-        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
