@@ -1,6 +1,5 @@
 ### jwt secret ###
 src/main/resources/jwt.yml
-
 ### firebase sdk ###
 src/main/resources/firebase-adminsdk.json
 
