@@ -1,8 +1,10 @@
 package project.dailysup.account.exception;
 
-public class ProfileNotFoundException extends RuntimeException{
+import project.dailysup.common.exception.BadRequestException;
+
+public class ProfileNotFoundException extends BadRequestException {
     public ProfileNotFoundException() {
-        super();
+        super("Profile Picture Not Found");
     }
 
     public ProfileNotFoundException(String message) {

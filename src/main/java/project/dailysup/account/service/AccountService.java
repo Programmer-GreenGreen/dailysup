@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import project.dailysup.account.domain.Account;
 import project.dailysup.account.domain.AccountRepository;
@@ -15,16 +16,9 @@ import project.dailysup.account.domain.Role;
 import project.dailysup.account.dto.*;
 import project.dailysup.account.exception.DuplicatedAccountException;
 import project.dailysup.account.exception.NotValidWithdrawRequest;
-import project.dailysup.account.exception.ProfileNotFoundException;
 import project.dailysup.account.exception.UserNotFoundException;
-import project.dailysup.common.exception.FailedFileSaveException;
-import project.dailysup.common.file.FileService;
 import project.dailysup.jwt.JwtTokenProvider;
 import project.dailysup.util.SecurityUtils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,8 +32,7 @@ public class AccountService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    private final FileService fileService;
-
+    private final ProfilePictureService profileService;
 
     @Transactional(readOnly = true)
     public Account findCurrentAccount(){
@@ -111,16 +104,21 @@ public class AccountService {
 
     public void changeProfilePicture(MultipartFile profilePicture){
         Account findAccount = getCurrentAccount();
-        String fileName = fileService.save(profilePicture)
-                .orElseThrow(()->new FailedFileSaveException("프로필 사진 저장에 실패했습니다."));
+
+        String oldProfileUrl = findAccount.getProfilePictureUrl();
+        if(StringUtils.hasText(oldProfileUrl)) {
+            profileService.delete(oldProfileUrl);
+        }
+
+        String fileName = profileService.upload(profilePicture);
         findAccount.changeProfile(fileName);
     }
 
     @Transactional(readOnly = true)
-    public File getProfilePicture(){
+    public byte[] getProfilePicture(){
         Account currentAccount = findCurrentAccount();
-        return fileService.get(currentAccount.getProfilePictureUrl())
-                                            .orElseThrow(()->new ProfileNotFoundException("프로필 사진 찾기 실패"));
+
+        return profileService.download(currentAccount.getProfilePictureUrl());
 
     }
 

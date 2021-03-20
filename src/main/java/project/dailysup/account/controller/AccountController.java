@@ -4,6 +4,7 @@ import com.google.firebase.database.annotations.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -73,22 +74,22 @@ public class AccountController {
     @GetMapping("/profile")
     public ResponseEntity<Resource> getProfile(){
 
-        File profilePicture = accountService.getProfilePicture();
+        byte[] profilePicture = accountService.getProfilePicture();
         HttpHeaders header = new HttpHeaders();
         Resource rs = null;
-        if(profilePicture.exists()) {
-            try {
-                String mimeType = new Tika().detect(profilePicture);
-                rs = new UrlResource(profilePicture.toURI());
-                header.setContentType(MediaType.parseMediaType(mimeType));
-            }catch(Exception e) {
-                e.printStackTrace();
-                return ResponseEntity.notFound().build();
-            }
-        }
-        return new ResponseEntity<>(rs, header, HttpStatus.OK);
 
+        try {
+            String mimeType = new Tika().detect(profilePicture);
+            rs = new ByteArrayResource(profilePicture);
+            header.setContentType(MediaType.parseMediaType(mimeType));
+        }catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.notFound().build();
+        }
+
+        return new ResponseEntity<>(rs, header, HttpStatus.OK);
     }
+
     @PostMapping("/profile")
     public ResponseEntity<?> changeProfile(@NotNull @RequestParam("file") MultipartFile file){
         accountService.changeProfilePicture(file);
