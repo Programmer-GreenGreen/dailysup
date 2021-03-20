@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.dailysup.account.dto.*;
 import project.dailysup.account.service.AccountService;
+import project.dailysup.util.SecurityUtils;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 
 
 @Slf4j
@@ -31,7 +31,6 @@ public class AccountController {
 
     @GetMapping("/current")
     public ResponseEntity<?> getCurrentUser(){
-
         RetrieveAccountDto dto = accountService.findCurrentAccountDto();
         return ResponseEntity.ok(dto);
     }

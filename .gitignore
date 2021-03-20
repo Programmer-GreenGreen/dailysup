@@ -1,11 +1,23 @@
+
+################ MUST EXCLUDE LIST ############################
+
+### exclude application.yml - it includes mysql credentials
+src/main/resources/application.yml
+### exclude s3 credentials ###
+src/main/resources/s3.yml
 ### jwt secret ###
 src/main/resources/jwt.yml
 ### firebase sdk ###
 src/main/resources/firebase-adminsdk.json
 
+###############################################################
+
+
+### exclude test - because ./gradlew build in ec2 is stucked testing. why? ###
+src/test/**/*
+
 ### Local File upload ###
 files/
-
 
 HELP.md
 .gradle
