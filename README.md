@@ -1,7 +1,7 @@
 
 <h1>Dailysup</h1>
 <h3>Alarm Service to Change Daily Supplements </h3>
-<h5>clone coding and refactoring for study</h5>
+<h5>clone coding and refactoring for study from scratch</h5>
 <h5>original: https://github.com/mash-up-kr/Tich-Backend</h5>
 
 <div>
