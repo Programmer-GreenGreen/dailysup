@@ -108,14 +108,12 @@ public class AccountService {
         String oldProfileUrl = findAccount.getProfilePictureUrl();
 
         if(!StringUtils.hasText(oldProfileUrl)) {
-            //프로필 사진이 없는 경우 upload
-            profileService.upload(profilePicture);
+            //기존의 프로필 사진이 없는 경우 upload
+            String uploadedPictureUrl = profileService.upload(profilePicture);
+            findAccount.changeProfile(uploadedPictureUrl);
         }else {
             profileService.modify(oldProfileUrl, profilePicture);
         }
-
-        String fileName = profileService.upload(profilePicture);
-        findAccount.changeProfile(fileName);
     }
 
     @Transactional(readOnly = true)

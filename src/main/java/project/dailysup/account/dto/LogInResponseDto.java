@@ -1,8 +1,10 @@
 package project.dailysup.account.dto;
 
+import lombok.Data;
 import lombok.Getter;
 
 @Getter
+@Data
 public class LogInResponseDto {
 
     private String loginId;

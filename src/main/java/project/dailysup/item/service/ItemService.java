@@ -3,6 +3,8 @@ package project.dailysup.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import project.dailysup.account.domain.Account;
 import project.dailysup.account.domain.AccountRepository;
 import project.dailysup.histroy.domain.History;
@@ -26,6 +28,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final AccountRepository accountRepository;
     private final HistoryService historyService;
+    private final ItemPictureService itemPictureService;
 
     @Transactional(readOnly = true)
     public List<ItemResponseDto> findAll() {
@@ -106,5 +109,19 @@ public class ItemService {
 
     public List<Item> getScheduledItems(LocalDate scheduledDate){
         return itemRepository.findScheduledItems(scheduledDate);
+    }
+
+    public void changeItemPicture(Long itemId, MultipartFile itemPicture){
+
+        Item findItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ItemNotFoundException("아이템을 찾을 수 없습니다."));
+        String oldItemPictureUrl = findItem.getItemPictureUrl();
+        String uploadedPictureUrl = null;
+        if(!StringUtils.hasText(oldItemPictureUrl)){
+            uploadedPictureUrl = itemPictureService.upload(itemPicture);
+            findItem.changeItemPicture(uploadedPictureUrl);
+        } else{
+            itemPictureService.modify(oldItemPictureUrl, itemPicture);
+        }
     }
 }

@@ -38,6 +38,8 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<History> history = new ArrayList<>();
 
+    private String itemPictureUrl;
+
 
     @Builder
     public Item(Account account, String title,
@@ -56,6 +58,8 @@ public class Item extends BaseEntity {
     public void changeCycle(Integer cycle){
         this.cycle = cycle;
     }
+
+    public void changeItemPicture(String itemPictureUrl){this.itemPictureUrl = itemPictureUrl;}
 
 
     public void changeScheduledDate(LocalDate scheduledDate){this.scheduledDate = scheduledDate;}

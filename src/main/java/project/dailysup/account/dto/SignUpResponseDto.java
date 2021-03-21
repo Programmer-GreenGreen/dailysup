@@ -1,10 +1,12 @@
 package project.dailysup.account.dto;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
 
 @Getter
+@Data
 public class SignUpResponseDto {
 
     private final String loginId;
