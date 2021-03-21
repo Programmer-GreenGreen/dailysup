@@ -1,4 +1,4 @@
-package project.dailysup.common.file;
+package project.dailysup.file;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @NoArgsConstructor
-public class S3Service{
+public class S3Repository {
     private AmazonS3 s3Client;
 
     @Value("${cloud.aws.credentials.accessKey}")
@@ -67,6 +67,7 @@ public class S3Service{
         String fileName = path + UUID.randomUUID().toString();
         log.info("saved file name : " + fileName);
         try {
+            //withCannedAcl(~.PublicRead) : 해당 파일에 public read 권한 주기.
             s3Client.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
                                 .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (Exception e) {
@@ -75,12 +76,23 @@ public class S3Service{
         return Optional.of(fileName);
     }
 
-    public boolean delete(String filepath){
+    public boolean modify(String filepath, MultipartFile file){
         try {
-            s3Client.deleteObject(bucket,filepath);
-            return true;
+            //withCannedAcl(~.PublicRead) : 해당 파일에 public read 권한 주기.
+            s3Client.putObject(new PutObjectRequest(bucket, filepath, file.getInputStream(), null)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (Exception e) {
             return false;
         }
+        return true;
+    }
+
+    public boolean delete(String filepath){
+        try {
+            s3Client.deleteObject(bucket,filepath);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 }

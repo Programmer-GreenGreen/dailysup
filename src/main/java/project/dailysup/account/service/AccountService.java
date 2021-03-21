@@ -106,8 +106,12 @@ public class AccountService {
         Account findAccount = getCurrentAccount();
 
         String oldProfileUrl = findAccount.getProfilePictureUrl();
-        if(StringUtils.hasText(oldProfileUrl)) {
-            profileService.delete(oldProfileUrl);
+
+        if(!StringUtils.hasText(oldProfileUrl)) {
+            //프로필 사진이 없는 경우 upload
+            profileService.upload(profilePicture);
+        }else {
+            profileService.modify(oldProfileUrl, profilePicture);
         }
 
         String fileName = profileService.upload(profilePicture);
@@ -121,8 +125,6 @@ public class AccountService {
         return profileService.download(currentAccount.getProfilePictureUrl());
 
     }
-
-
 
 
 
