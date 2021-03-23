@@ -92,11 +92,6 @@ public class AccountService {
         findAccount.changeEmail(emailDto.getEmail());
     }
 
-    private Account getCurrentAccount() {
-        return accountRepository.findByLoginId(SecurityUtils.getCurrentLoginId())
-                .orElseThrow(UserNotFoundException::new);
-    }
-
     public void changePassword(PasswordDto dto){
         Account findAccount = getCurrentAccount();
         findAccount.changePassword(passwordEncoder.encode(dto.getPassword()));
@@ -124,6 +119,11 @@ public class AccountService {
 
     }
 
+
+    private Account getCurrentAccount() {
+        return accountRepository.findByLoginId(SecurityUtils.getCurrentLoginId())
+                .orElseThrow(UserNotFoundException::new);
+    }
 
 
     private void validateWithdrawRequest(WithdrawDto withdrawDto, Account currentAccount) {
