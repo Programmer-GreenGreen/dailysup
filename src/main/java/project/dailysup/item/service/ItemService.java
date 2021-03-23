@@ -74,8 +74,13 @@ public class ItemService {
 
 
     public Long deleteItem(Long itemId){
-        itemRepository.deleteById(itemId);
-        return itemId;
+        String currentAccountId = SecurityUtils.getCurrentLoginId();
+        Long numOfDeleted =  itemRepository.deleteOneById(currentAccountId, itemId);
+        if(numOfDeleted == 0){
+            throw new ItemNotFoundException();
+        }else{
+            return numOfDeleted;
+        }
     }
 
 

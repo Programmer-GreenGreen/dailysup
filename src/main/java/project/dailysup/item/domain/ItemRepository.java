@@ -28,4 +28,12 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
                 "and i.id = :itemId")
     Optional<Item> findOneById(@Param("currentAccountId") String currentAccountId,
                                @Param("itemId") Long itemId);
+
+
+    @Query("delete i " +
+            "from Item i " +
+            "where i.account.loginId = :currentAccountId " +
+            "and i.id = :itemId")
+    Long deleteOneById(@Param("currentAccountId") String currentAccountId,
+                       @Param("itemId") Long itemId);
 }

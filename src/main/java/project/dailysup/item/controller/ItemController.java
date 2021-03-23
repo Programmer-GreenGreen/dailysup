@@ -48,12 +48,10 @@ public class ItemController {
     }
 
 
-
-    @DeleteMapping
-    public ResponseEntity<?> deleteItem(@RequestBody ItemDeleteDto dto){
-        Long deletedItemId = itemService.deleteItem(dto.getItemId());
-        ItemIdDto itemIdDto = new ItemIdDto(deletedItemId);
-        return ResponseEntity.ok(itemIdDto);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteItem(@PathVariable("id") Long id){
+        itemService.deleteItem(id);
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -51,7 +51,6 @@ public class MessageProvider {
                 Notification notification = new Notification(NOTIFICATION_TITLE, NOTIFICATION_BODY);
                 Message.Builder builder = Message.builder()
                                                     .setNotification(notification)
-                                                    .putData("title", NOTIFICATION_TITLE)
                                                     .setToken(token);
                 for(Item item : items){
                     builder

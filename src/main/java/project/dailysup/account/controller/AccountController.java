@@ -78,14 +78,9 @@ public class AccountController {
         HttpHeaders header = new HttpHeaders();
         Resource rs = null;
 
-        try {
-            String mimeType = new Tika().detect(profilePicture);
-            rs = new ByteArrayResource(profilePicture);
-            header.setContentType(MediaType.parseMediaType(mimeType));
-        }catch(Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
+        String mimeType = new Tika().detect(profilePicture);
+        rs = new ByteArrayResource(profilePicture);
+        header.setContentType(MediaType.parseMediaType(mimeType));
 
         return new ResponseEntity<>(rs, header, HttpStatus.OK);
     }
