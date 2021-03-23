@@ -15,8 +15,8 @@ Every request except sign-up and log-in needs <br/>
 jwt token starting with "Bearer: " in "Authorization" header. 
 
 </div>
-
-<h5>Account<h5/>
+<br/><br/>
+<h3>Account<h3/>
 
 /api/account/
 
@@ -31,9 +31,9 @@ jwt token starting with "Bearer: " in "Authorization" header.
 |profile|get|프로필 사진을 조회한다.|
 |profile|post|프로필 사진을 변경한다.|
 
+<br/><br/>
 
-
-<h5>Item<h5/>
+<h3>Item<h3/>
 
 /api/item/
 
@@ -47,8 +47,8 @@ jwt token starting with "Bearer: " in "Authorization" header.
 |picture/{itemId}|get|아이템의 사진을 가져온다.|
 |picture/{itemId}|post|아이템의 사진을 교체한다.|
 
-
-<h5>History<h5/>
+<br/><br/>
+<h3>History<h3/>
 
 /api/history/
 
@@ -58,10 +58,8 @@ jwt token starting with "Bearer: " in "Authorization" header.
 | |put|아이템 교체 기록을 수정한다.|
 |{historyId}|delete|교체 기록을 삭제한다.|
 
-
-<h5>Device<h5/>
-
-push device CRUD api
+<br/><br/>
+<h3>Device<h3/>
 
 /api/device/
 
