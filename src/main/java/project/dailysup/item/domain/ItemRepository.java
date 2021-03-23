@@ -29,8 +29,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     Optional<Item> findOneById(@Param("currentAccountId") String currentAccountId,
                                @Param("itemId") Long itemId);
 
-
-    @Query("delete i " +
+    @EntityGraph(attributePaths = {"account"})
+    @Query("delete " +
             "from Item i " +
             "where i.account.loginId = :currentAccountId " +
             "and i.id = :itemId")

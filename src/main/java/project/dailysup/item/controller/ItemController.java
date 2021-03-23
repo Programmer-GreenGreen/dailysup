@@ -1,8 +1,17 @@
 package project.dailysup.item.controller;
 
+import com.google.firebase.database.annotations.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import project.dailysup.account.service.AccountService;
 import project.dailysup.item.dto.*;
 import project.dailysup.item.service.ItemService;
 
@@ -14,6 +23,7 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
+    private final AccountService accountService;
 
     @GetMapping
     public ResponseEntity<?> getItems(){
@@ -23,9 +33,9 @@ public class ItemController {
         return ResponseEntity.ok(all);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getItem(@PathVariable Long id){
-        ItemResponseDto findItemDto = itemService.findItem(id);
+    @GetMapping("/{itemId}")
+    public ResponseEntity<?> getItem(@PathVariable Long itemId){
+        ItemResponseDto findItemDto = itemService.findItem(itemId);
         return ResponseEntity.ok(findItemDto);
     }
 
@@ -48,9 +58,30 @@ public class ItemController {
     }
 
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable("id") Long id){
-        itemService.deleteItem(id);
+    @DeleteMapping("/{itemId}")
+    public ResponseEntity<?> deleteItem(@PathVariable("itemId") Long itemId){
+        itemService.deleteItem(itemId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/picture/{itemId}")
+    public ResponseEntity<Resource> getPicture(@PathVariable Long itemId){
+
+        byte[] profilePicture = itemService.getItemPicture(itemId);
+        HttpHeaders header = new HttpHeaders();
+        Resource rs = null;
+
+        String mimeType = new Tika().detect(profilePicture);
+        rs = new ByteArrayResource(profilePicture);
+        header.setContentType(MediaType.parseMediaType(mimeType));
+
+        return new ResponseEntity<>(rs, header, HttpStatus.OK);
+    }
+
+    @PostMapping("/picture/{itemId}")
+    public ResponseEntity<?> changePicture(@NotNull @RequestParam("file") MultipartFile file,
+                                           @PathVariable Long itemId){
+        itemService.changeItemPicture(itemId, file);
         return ResponseEntity.ok().build();
     }
 

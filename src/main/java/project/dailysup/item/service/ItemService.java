@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import project.dailysup.account.domain.Account;
 import project.dailysup.account.domain.AccountRepository;
+import project.dailysup.account.service.AccountService;
 import project.dailysup.histroy.domain.History;
 import project.dailysup.histroy.service.HistoryService;
 import project.dailysup.item.domain.Item;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final ItemRepository itemRepository;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
     private final HistoryService historyService;
     private final ItemPictureService itemPictureService;
 
@@ -55,8 +56,7 @@ public class ItemService {
 
 
     public ItemIdDto addItem(ItemCreateDto dto){
-        String currentAccountId = SecurityUtils.getCurrentLoginId();
-        Account findAccount = accountRepository.findByLoginId(currentAccountId).get();
+        Account findAccount = accountService.findCurrentAccount();
 
         Item item = Item.builder()
                 .account(findAccount)
@@ -116,9 +116,17 @@ public class ItemService {
         return itemRepository.findScheduledItems(scheduledDate);
     }
 
-    public void changeItemPicture(Long itemId, MultipartFile itemPicture){
+    @Transactional(readOnly = true)
+    public byte[] getItemPicture(Long itemId){
+        String loginId = accountService.findCurrentAccount().getLoginId();
+        Item findItem = itemRepository.findOneById(loginId, itemId)
+                .orElseThrow(() -> new ItemNotFoundException("아이템을 찾을 수 없습니다."));
+        return itemPictureService.download(findItem.getItemPictureUrl());
+    }
 
-        Item findItem = itemRepository.findById(itemId)
+    public void changeItemPicture(Long itemId, MultipartFile itemPicture){
+        String loginId = accountService.findCurrentAccount().getLoginId();
+        Item findItem = itemRepository.findOneById(loginId, itemId)
                 .orElseThrow(() -> new ItemNotFoundException("아이템을 찾을 수 없습니다."));
         String oldItemPictureUrl = findItem.getItemPictureUrl();
         String uploadedPictureUrl = null;
@@ -129,4 +137,6 @@ public class ItemService {
             itemPictureService.modify(oldItemPictureUrl, itemPicture);
         }
     }
+
+
 }

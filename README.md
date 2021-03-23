@@ -16,14 +16,14 @@
 
 |url|method|desc|
 |---|---|---|
-|current|get|토큰의 계정의 정보를 반환|
-|sign-up|post|회원가입 요청|
-|log-in|post|토큰 발급|
-|withdraw|post|회원 탈퇴|
-|email|post|이메일 변경|
-|password|post|비밀번호 변경|
-|profile|get|프로필 사진 조회|
-|profile|post|프로필 사진 변경|
+|current|get|토큰 계정의 정보를 가져온다.|
+|sign-up|post|회원가입을 요청한다.|
+|log-in|post|토큰을 발급받는다.|
+|withdraw|post|회원 탈퇴한다.|
+|email|post|이메일을 변경한다.|
+|password|post|비밀번호를 변경한다.|
+|profile|get|프로필 사진을 조회한다.|
+|profile|post|프로필 사진을 변경한다.|
 
 
 
@@ -33,13 +33,13 @@
 
 |url|method|desc|
 |---|---|---|
-| |get|토큰 계정의 아이템 목록 반환|
-|{id}|get|해당 id의 아이템 정보 반환|
-|{itemId}|post|아이템 정보 수정|
-|update/{itemId}|post|아이템 교체일 갱신|
-|{id}|delete|아이템 삭제|
-
-아이템 프로필 추가 및 수정 api 구현 예정
+| |get|토큰 계정의 아이템 목록을 가져온다.|
+|{itemId}|get|해당 id의 아이템 정보를 가져온다.|
+|{itemId}|post|아이템의 정보를 수정한다.|
+|update/{itemId}|post|아이템의 교체일을 갱신한다.|
+|{itemId}|delete|아이템을 삭제한다.|
+|picture/{itemId}|get|아이템의 사진을 가져온다.|
+|picture/{itemId}|post|아이템의 사진을 교체한다.|
 
 
 <h5>History<h5/>
@@ -48,23 +48,23 @@
 
 |url|method|desc|
 |---|---|---|
-|{itemId}|get|아이템의 교체 기록 반환|
-| |put|아이템 교체 기록 수정|
-|{historyId}|post|교체 기록 삭제|
+|{itemId}|get|아이템의 교체 기록을 가져온다.|
+| |put|아이템 교체 기록을 수정한다.|
+|{historyId}|delete|교체 기록을 삭제한다.|
 
 
 <h5>Device<h5/>
 
-push 알림 device CRUD api
+push device CRUD api
 
 /api/device/
 
 |url|method|desc|
 |---|---|---|
-| |get|디바이스 목록 반환|
-| |post|디바이스 등록|
-| |delete|디바이스 삭제(fcm 토큰이 담겨있기 때문에 body 활용)|
-|/all|delete|디바이스 모두 삭제|
+| |get|토큰 계정의 디바이스 목록을 가져온다.|
+| |post|토큰 계정에 디바이스를 등록한다.|
+| |delete|디바이스를 삭제한다.(fcm 토큰은 body에 담긴다.)|
+|all|delete|토큰 계정의 디바이스 모두 삭제한다.|
 
 
 
