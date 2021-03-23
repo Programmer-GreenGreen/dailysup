@@ -7,7 +7,13 @@
 <div>
     <p>it is not for commercial purpose</p>
     <p>ignored credential(yml, jwt, aws properties)</p>
-    <p>spring mvc, spring security, jwt, spring data jpa, aws s3</p>
+
+    What are used: spring boot mvc and security,
+                   jwt, spring data jpa, aws s3 and deployed in ec2
+
+Every request except sign-up and log-in needs <br/>
+jwt token starting with "Bearer: " in "Authorization" header. 
+
 </div>
 
 <h5>Account<h5/>
