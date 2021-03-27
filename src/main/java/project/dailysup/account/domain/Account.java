@@ -58,9 +58,9 @@ public class Account extends BaseEntity {
 
 
     @Builder
-    public Account(String loginId, String password, String email, String nickname, String profilePictureUrl, Role role, Boolean isActivated) {
+    public Account(String loginId, String password, PasswordEncoder passwordEncoder, String email, String nickname, String profilePictureUrl, Role role, Boolean isActivated) {
         this.loginId = loginId;
-        this.password = password;
+        this.changePassword(passwordEncoder, password);
         this.email = email;
         this.nickname = nickname;
         this.profilePictureUrl = profilePictureUrl;

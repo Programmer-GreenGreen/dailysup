@@ -64,7 +64,8 @@ public class AccountService {
 
         Account saveAccount = Account.builder()
                 .loginId(requestDto.getLoginId())
-                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .passwordEncoder(passwordEncoder)
+                .password(requestDto.getPassword())
                 .nickname(requestDto.getNickname())
                 .role(Role.USER)
                 .isActivated(true)
