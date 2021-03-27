@@ -1,5 +1,6 @@
 package project.dailysup.item.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+@JsonIgnoreType
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

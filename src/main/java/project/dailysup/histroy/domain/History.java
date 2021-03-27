@@ -1,6 +1,7 @@
 package project.dailysup.histroy.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import project.dailysup.item.domain.Item;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-
+@JsonIgnoreType
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

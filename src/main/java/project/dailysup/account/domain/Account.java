@@ -1,11 +1,11 @@
 package project.dailysup.account.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.sendgrid.SendGridAutoConfiguration;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import project.dailysup.common.BaseEntity;
@@ -17,8 +17,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Getter
+@JsonIgnoreType
+@Getter @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account extends BaseEntity {
 

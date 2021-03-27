@@ -1,6 +1,7 @@
 package project.dailysup.device.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,8 +11,8 @@ import project.dailysup.common.BaseEntity;
 
 import javax.persistence.*;
 
-@Entity
-@Getter
+@JsonIgnoreType
+@Getter @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Device extends BaseEntity {
 
