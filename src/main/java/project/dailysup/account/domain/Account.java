@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.autoconfigure.sendgrid.SendGridAutoConfiguration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import project.dailysup.common.BaseEntity;
 import project.dailysup.device.domain.Device;
 import project.dailysup.item.domain.Item;
@@ -82,8 +84,8 @@ public class Account extends BaseEntity {
         this.deviceList = deviceList;
     }
 
-    public void changePassword(String password){
-        this.password = password;
+    public void changePassword(PasswordEncoder encoder, String password){
+        this.password = encoder.encode(password);
     }
 
     public void changeEmail(String email){

@@ -94,7 +94,7 @@ public class AccountService {
 
     public void changePassword(PasswordDto dto){
         Account findAccount = getCurrentAccount();
-        findAccount.changePassword(passwordEncoder.encode(dto.getPassword()));
+        findAccount.changePassword(passwordEncoder, dto.getPassword());
     }
 
     public void changeProfilePicture(MultipartFile profilePicture){
