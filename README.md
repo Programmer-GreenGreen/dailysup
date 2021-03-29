@@ -1,8 +1,8 @@
 
 <h1>Dailysup</h1>
 <h3>Alarm Service to Change Daily Supplements </h3>
-<h5>Clone coding and refactoring for study from scratch</h5>
-<h5>Original Project: https://github.com/mash-up-kr/Tich-Backend</h5>
+<p>Clone coding and refactoring for study from scratch</p>
+<p>Original Project: https://github.com/mash-up-kr/Tich-Backend</p>
 
 <div>
     <p>it is not for commercial purpose</p>
@@ -16,7 +16,12 @@ jwt token starting with "Bearer: " in "Authorization" header.
 
 </div>
 
-<br/><br/>
+<hr>
+<p>everything will be changed according to this:<br> 
+<a href="https://stackoverflow.blog/2020/03/02/best-practices-for-rest-api-design/">best restful practice</a>
+
+<br><br>
+
 <h3> Account </h3>
 
 /api/account/
