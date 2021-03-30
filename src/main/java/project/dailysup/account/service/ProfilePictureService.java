@@ -12,6 +12,7 @@ import project.dailysup.file.S3Repository;
 @Service
 @RequiredArgsConstructor
 public class ProfilePictureService {
+
     //Profile picture directory path in bucket
     private static final String PROFILE_PATH = "profile/";
 

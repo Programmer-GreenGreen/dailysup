@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import project.dailysup.account.controller.AccountController;
+import project.dailysup.account.controller.AccountInfoController;
 import project.dailysup.account.domain.Account;
 import project.dailysup.account.domain.AccountRepository;
 import project.dailysup.account.domain.Role;
@@ -48,14 +50,13 @@ public class AccountService {
     }
 
     @Transactional(readOnly = true)
-    public TokenDto logIn(LogInRequestDto requestDto) {
+    public String logIn(String loginId, String password) {
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(requestDto.getLoginId(), requestDto.getPassword());
+                new UsernamePasswordAuthenticationToken(loginId, password);
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        String jwtToken = jwtTokenProvider.createToken(authentication);
-        return new TokenDto(jwtToken);
+        return jwtTokenProvider.createToken(authentication);
     }
 
     public SignUpResponseDto singUp(SignUpRequestDto requestDto){
@@ -79,7 +80,7 @@ public class AccountService {
                                 .build();
     }
 
-    public LoginIdDto withdraw(WithdrawDto withdrawDto){
+    public LoginIdDto withdraw(AccountController.WithdrawDto withdrawDto){
         Account currentAccount = findCurrentAccount();
 
         validateWithdrawRequest(withdrawDto, currentAccount);
@@ -88,12 +89,23 @@ public class AccountService {
 
     }
 
-    public void changeEmail(EmailDto emailDto) {
+    @Transactional(readOnly = true)
+    public String getEmail() {
+        Account findAccount = getCurrentAccount();
+        return findAccount.getEmail();
+    }
+
+    public void changeEmail(AccountInfoController.EmailDto emailDto) {
         Account findAccount = getCurrentAccount();
         findAccount.changeEmail(emailDto.getEmail());
     }
 
-    public void changePassword(PasswordDto dto){
+    public void deleteEmail(){
+        Account findAccount = getCurrentAccount();
+        findAccount.changeEmail("");
+    }
+
+    public void changePassword(AccountInfoController.PasswordDto dto){
         Account findAccount = getCurrentAccount();
         findAccount.changePassword(passwordEncoder, dto.getPassword());
     }
@@ -112,6 +124,16 @@ public class AccountService {
         }
     }
 
+    public void deleteProfilePicture(){
+        Account findAccount = getCurrentAccount();
+
+        String profileUrl = findAccount.getProfilePictureUrl();
+
+        if(StringUtils.hasText(profileUrl)) {
+            profileService.delete(profileUrl);
+        }
+    }
+
     @Transactional(readOnly = true)
     public byte[] getProfilePicture(){
         Account currentAccount = findCurrentAccount();
@@ -127,7 +149,7 @@ public class AccountService {
     }
 
 
-    private void validateWithdrawRequest(WithdrawDto withdrawDto, Account currentAccount) {
+    private void validateWithdrawRequest(AccountController.WithdrawDto withdrawDto, Account currentAccount) {
 
         if(!withdrawDto.getLoginId().equals(currentAccount.getLoginId())
                 && passwordEncoder.matches(withdrawDto.getPassword(), findCurrentAccount().getPassword())){
@@ -141,6 +163,5 @@ public class AccountService {
             throw new DuplicatedAccountException();
         }
     }
-
 
 }

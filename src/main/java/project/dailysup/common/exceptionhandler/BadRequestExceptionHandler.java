@@ -50,7 +50,7 @@ public class BadRequestExceptionHandler {
         ExceptionResponse exceptionResponse =
                 new ExceptionResponse(e, request, false);
 
-        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
 
