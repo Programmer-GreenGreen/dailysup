@@ -11,7 +11,7 @@ import project.dailysup.file.S3Repository;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ItemPictureService {
+public class ItemPictureFileService {
     //Item picture directory path in bucket
     private static final String PROFILE_PATH = "item/";
 

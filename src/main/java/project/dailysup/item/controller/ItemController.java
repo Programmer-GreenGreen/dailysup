@@ -11,19 +11,23 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import project.dailysup.account.service.AccountService;
+import project.dailysup.account.service.AccountRegisterService;
 import project.dailysup.item.dto.*;
 import project.dailysup.item.service.ItemService;
 
 import java.util.List;
 
+// TODO: Dto 서비스 단으로 넘기지 말기.
+// TODO: Dto static class 로 가져오기.
+// TODO: 컨트롤러 쪼개기
+// TODO: 사진 Delete 구현하기
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/items")
 public class ItemController {
 
     private final ItemService itemService;
-    private final AccountService accountService;
+    private final AccountRegisterService accountRegisterService;
 
     @GetMapping
     public ResponseEntity<?> getItems(){
@@ -33,16 +37,16 @@ public class ItemController {
         return ResponseEntity.ok(all);
     }
 
-    @GetMapping("/{itemId}")
-    public ResponseEntity<?> getItem(@PathVariable Long itemId){
-        ItemResponseDto findItemDto = itemService.findItem(itemId);
-        return ResponseEntity.ok(findItemDto);
-    }
-
     @PostMapping
     public ResponseEntity<?> addItem(@RequestBody ItemCreateDto dto){
         ItemIdDto itemIdDto = itemService.addItem(dto);
         return ResponseEntity.ok(itemIdDto);
+    }
+
+    @GetMapping("/{itemId}")
+    public ResponseEntity<?> getItem(@PathVariable Long itemId){
+        ItemResponseDto findItemDto = itemService.findItem(itemId);
+        return ResponseEntity.ok(findItemDto);
     }
 
     @PostMapping("/{itemId}")
@@ -51,7 +55,7 @@ public class ItemController {
         return ResponseEntity.ok(itemIdDto);
     }
 
-    @PostMapping("/update/{itemId}")
+    @PostMapping("/{itemId}/changeDay")
     public ResponseEntity<?> updateItem(@PathVariable Long itemId, @RequestBody ItemUpdateDto dto){
         ItemIdDto itemIdDto = itemService.updateItem(itemId, dto);
         return ResponseEntity.ok(itemIdDto);

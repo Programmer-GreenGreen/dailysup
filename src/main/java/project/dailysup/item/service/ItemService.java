@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import project.dailysup.account.domain.Account;
-import project.dailysup.account.domain.AccountRepository;
-import project.dailysup.account.service.AccountService;
+import project.dailysup.account.service.AccountBaseService;
+import project.dailysup.account.service.AccountRegisterService;
 import project.dailysup.histroy.domain.History;
 import project.dailysup.histroy.service.HistoryService;
 import project.dailysup.item.domain.Item;
@@ -17,19 +17,20 @@ import project.dailysup.item.exception.ItemNotFoundException;
 import project.dailysup.util.SecurityUtils;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+// TODO: ItemService 쪼개기
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ItemService {
 
     private final ItemRepository itemRepository;
-    private final AccountService accountService;
+    private final AccountBaseService accountBaseService;
     private final HistoryService historyService;
-    private final ItemPictureService itemPictureService;
+    private final ItemPictureFileService itemPictureFileService;
 
     @Transactional(readOnly = true)
     public List<ItemResponseDto> findAll() {
@@ -56,7 +57,7 @@ public class ItemService {
 
 
     public ItemIdDto addItem(ItemCreateDto dto){
-        Account findAccount = accountService.findCurrentAccount();
+        Account findAccount = accountBaseService.getCurrentAccount();
 
         Item item = Item.builder()
                 .account(findAccount)
@@ -118,23 +119,23 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public byte[] getItemPicture(Long itemId){
-        String loginId = accountService.findCurrentAccount().getLoginId();
+        String loginId = accountBaseService.getCurrentAccount().getLoginId();
         Item findItem = itemRepository.findOneById(loginId, itemId)
                 .orElseThrow(() -> new ItemNotFoundException("아이템을 찾을 수 없습니다."));
-        return itemPictureService.download(findItem.getItemPictureUrl());
+        return itemPictureFileService.download(findItem.getItemPictureUrl());
     }
 
     public void changeItemPicture(Long itemId, MultipartFile itemPicture){
-        String loginId = accountService.findCurrentAccount().getLoginId();
+        String loginId = accountBaseService.getCurrentAccount().getLoginId();
         Item findItem = itemRepository.findOneById(loginId, itemId)
                 .orElseThrow(() -> new ItemNotFoundException("아이템을 찾을 수 없습니다."));
         String oldItemPictureUrl = findItem.getItemPictureUrl();
         String uploadedPictureUrl = null;
         if(!StringUtils.hasText(oldItemPictureUrl)){
-            uploadedPictureUrl = itemPictureService.upload(itemPicture);
+            uploadedPictureUrl = itemPictureFileService.upload(itemPicture);
             findItem.changeItemPicture(uploadedPictureUrl);
         } else{
-            itemPictureService.modify(oldItemPictureUrl, itemPicture);
+            itemPictureFileService.modify(oldItemPictureUrl, itemPicture);
         }
     }
 
