@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.dailysup.account.domain.Account;
+import project.dailysup.account.service.AccountBaseService;
 import project.dailysup.account.service.AccountRegisterService;
 import project.dailysup.device.domain.Device;
 import project.dailysup.device.domain.DeviceRepository;
@@ -19,36 +20,24 @@ import java.util.stream.Collectors;
 @Transactional
 public class DeviceService {
 
-    private final AccountRegisterService accountRegisterService;
-    private final DeviceRepository deviceRepository;
+    private final AccountBaseService accountBaseService;
 
-    @Transactional(readOnly = true)
-    public List<DeviceDto> findAll(){
-        Account currentAccount = accountRegisterService.findCurrentAccount();
-        List<Device> devices = deviceRepository.findByAccount(currentAccount);
-        return devices.stream().map(DeviceDto::new).collect(Collectors.toList());
-    }
-    @Transactional(readOnly = true)
-    public List<Device> findByAccountList(List<Account> accountList){
-        return deviceRepository.findByAccountList(accountList);
-    }
-
-    public void addDevice(DeviceDto deviceDto){
-        Account currentAccount = accountRegisterService.findCurrentAccount();
-        Device device = new Device(deviceDto.getFcmToken(), currentAccount);
+    public void addDevice(String fcmToken){
+        Account currentAccount = accountBaseService.getCurrentAccount();
+        Device device = new Device(fcmToken, currentAccount);
         currentAccount.addDevice(device);
     }
 
 
-    public void removeDevice(DeviceDto deviceDto) {
-        Account currentAccount = accountRegisterService.findCurrentAccount();
-        if(!currentAccount.removeDevice(deviceDto.getFcmToken())){
+    public void removeDevice(String fcmToken) {
+        Account currentAccount = accountBaseService.getCurrentAccount();
+        if(!currentAccount.removeDevice(fcmToken)){
             throw new DeviceNotFoundException();
         }
     }
 
     public void removeAllCurrentAccountDevice(){
-        Account currentAccount = accountRegisterService.findCurrentAccount();
+        Account currentAccount = accountBaseService.getCurrentAccount();
         currentAccount.changeDeviceList(new ArrayList<>());
     }
 

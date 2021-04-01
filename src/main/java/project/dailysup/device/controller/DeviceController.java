@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import project.dailysup.device.domain.Device;
 import project.dailysup.device.domain.DeviceRepository;
 import project.dailysup.device.dto.DeviceDto;
+import project.dailysup.device.service.DeviceQueryService;
 import project.dailysup.device.service.DeviceService;
 
 import java.util.List;
@@ -18,22 +19,23 @@ import java.util.List;
 @RequestMapping("/api/device")
 public class DeviceController {
     private final DeviceService deviceService;
+    private final DeviceQueryService deviceQueryService;
 
     @GetMapping
     public ResponseEntity<?> findDevice(){
-        List<DeviceDto> all = deviceService.findAll();
+        List<DeviceDto> all = deviceQueryService.findAll();
         return ResponseEntity.ok(all);
     }
 
     @PostMapping
-    public ResponseEntity<?> addDevice(@RequestBody DeviceDto deviceDto){
-        deviceService.addDevice(deviceDto);
+    public ResponseEntity<?> addDevice(@RequestBody DeviceDto dto){
+        deviceService.addDevice(dto.getFcmToken());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<?> removeDevice(@RequestBody DeviceDto deviceDto){
-        deviceService.removeDevice(deviceDto);
+    public ResponseEntity<?> removeDevice(@RequestBody DeviceDto dto){
+        deviceService.removeDevice(dto.getFcmToken());
         return ResponseEntity.ok().build();
     }
 
