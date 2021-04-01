@@ -3,13 +3,7 @@ package project.dailysup.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-import project.dailysup.account.domain.Account;
-import project.dailysup.account.service.AccountBaseService;
-import project.dailysup.histroy.domain.History;
-import project.dailysup.histroy.service.HistoryService;
-import project.dailysup.item.controller.ItemController;
+import project.dailysup.histroy.service.HistoryQueryService;
 import project.dailysup.item.domain.Item;
 import project.dailysup.item.domain.ItemRepository;
 import project.dailysup.item.dto.*;
@@ -27,7 +21,7 @@ import java.util.stream.Collectors;
 public class ItemQueryService {
 
     private final ItemRepository itemRepository;
-    private final HistoryService historyService;
+    private final HistoryQueryService historyQueryService;
 
     public List<ItemResponseDto> findAll() {
 
@@ -35,7 +29,7 @@ public class ItemQueryService {
         List<Item> findAllItems = itemRepository.findAllByAccount(currentAccountId);
 
         return findAllItems.stream()
-                .map(i -> ItemResponseDto.of(i, historyService.getStartDate(i), historyService.getLatestDate(i)))
+                .map(i -> ItemResponseDto.of(i, historyQueryService.getStartDate(i), historyQueryService.getLatestDate(i)))
                 .collect(Collectors.toList());
     }
 
@@ -46,7 +40,7 @@ public class ItemQueryService {
                 .findOneById(currentAccountId,itemId)
                 .orElseThrow(ItemNotFoundException::new);
 
-        return ItemResponseDto.of(findItem,historyService.getStartDate(findItem), historyService.getLatestDate(findItem));
+        return ItemResponseDto.of(findItem, historyQueryService.getStartDate(findItem), historyQueryService.getLatestDate(findItem));
     }
 
 

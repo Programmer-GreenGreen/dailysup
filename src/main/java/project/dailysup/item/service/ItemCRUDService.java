@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import project.dailysup.account.domain.Account;
 import project.dailysup.account.service.AccountBaseService;
 import project.dailysup.histroy.domain.History;
-import project.dailysup.histroy.service.HistoryService;
+import project.dailysup.histroy.service.HistoryCRUDService;
+import project.dailysup.histroy.service.HistoryQueryService;
 import project.dailysup.item.domain.Item;
 import project.dailysup.item.domain.ItemRepository;
 import project.dailysup.item.dto.ItemBasicInfoDto;
@@ -25,7 +26,7 @@ public class ItemCRUDService {
 
     private final AccountBaseService accountBaseService;
     private final ItemRepository itemRepository;
-    private final HistoryService historyService;
+    private final HistoryCRUDService historyCRUDService;
 
     public ItemIdDto addItem(ItemCreateDto dto){
         Account findAccount = accountBaseService.getCurrentAccount();
@@ -66,7 +67,7 @@ public class ItemCRUDService {
         findItem.changeTitle(dto.getTitle());
         findItem.changeScheduledDate(findItem.getScheduledDate().plusDays(dto.getCycle()-findItem.getCycle()));
         findItem.changeCycle(dto.getCycle());
-        historyService.changeStartDate(findItem, dto.getStartDate());
+        historyCRUDService.changeStartDate(findItem, dto.getStartDate());
 
         return ItemIdDto.of(findItem.getId());
     }
@@ -76,7 +77,7 @@ public class ItemCRUDService {
         Item findItem = itemRepository.findOneById(currentAccountId, itemId)
                 .orElseThrow(ItemNotFoundException::new);
 
-        historyService.addHistory(findItem, changeDate);
+        historyCRUDService.addHistory(findItem, changeDate);
 
         findItem.changeScheduledDate(changeDate.plusDays(findItem.getCycle()));
 
