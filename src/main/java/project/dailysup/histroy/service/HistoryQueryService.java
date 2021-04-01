@@ -19,13 +19,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class HistoryService {
+@Transactional(readOnly = true)
+public class HistoryQueryService {
 
     private final HistoryRepository historyRepository;
     private final ItemRepository itemRepository;
 
-    @Transactional(readOnly = true)
     public List<HistoryResponseDto> findAllHistory(Long itemId){
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
         List<History> historyList = historyRepository.findAllByItem(item);
@@ -34,25 +33,6 @@ public class HistoryService {
                 .collect(Collectors.toList());
     }
 
-    public void changeHistoryDate(Long historyId, LocalDate localDate){
-        History findHistory = historyRepository
-                                    .findById(historyId)
-                                    .orElseThrow(HistoryNotFoundException::new);
-        findHistory.changeReplaceDate(localDate);
-    }
-
-    public void deleteHistory(Long historyId){
-        historyRepository.deleteById(historyId);
-    }
-
-
-
-    public void addHistory(Item item, LocalDate addDate){
-        History history = new History(item, addDate);
-        historyRepository.save(history);
-    }
-
-    @Transactional(readOnly = true)
     public LocalDate getStartDate(Item item){
         List<History> historyList = historyRepository.findAllByItem(item);
         historyList.sort(Comparator.comparing(History::getReplacementDate));
@@ -60,7 +40,6 @@ public class HistoryService {
         return startDate;
     }
 
-    @Transactional(readOnly = true)
     public LocalDate getLatestDate(Item item){
         List<History> historyList = historyRepository.findAllByItem(item);
         int size = historyList.size();
@@ -69,9 +48,5 @@ public class HistoryService {
         return latestDate;
     }
 
-    public void changeStartDate(Item item, LocalDate startDate){
-        List<History> historyList = historyRepository.findAllByItem(item);
-        historyList.sort(Comparator.comparing(History::getReplacementDate));
-        historyList.get(0).changeReplaceDate(startDate);
-    }
+
 }

@@ -1,15 +1,18 @@
 package project.dailysup.histroy.controller;
 
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.dailysup.histroy.dto.HistoryIdDto;
-import project.dailysup.histroy.dto.HistoryRequestDto;
 import project.dailysup.histroy.dto.HistoryResponseDto;
-import project.dailysup.histroy.service.HistoryService;
-import project.dailysup.item.dto.ItemIdDto;
+import project.dailysup.histroy.service.HistoryCRUDService;
+import project.dailysup.histroy.service.HistoryQueryService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -17,24 +20,34 @@ import java.util.List;
 @RequestMapping("/api/history")
 public class HistoryController {
 
-    private final HistoryService historyService;
+    private final HistoryQueryService historyQueryService;
+    private final HistoryCRUDService historyCRUDService;
 
     @GetMapping("/{itemId}")
     public ResponseEntity<?> findAllHistory(@PathVariable Long itemId){
-        List<HistoryResponseDto> allHistory = historyService.findAllHistory(itemId);
+        List<HistoryResponseDto> allHistory = historyQueryService.findAllHistory(itemId);
         return ResponseEntity.ok(allHistory);
     }
 
     @PutMapping
-    public ResponseEntity<?> changeHistory(@RequestBody HistoryRequestDto dto){
-        historyService.changeHistoryDate(dto.getHistoryId(),dto.getReplaceDate());
+    public ResponseEntity<?> changeHistory(@RequestBody HistoryChangeDto dto){
+        historyCRUDService.changeHistoryDate(dto.getHistoryId(),dto.getReplaceDate());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{historyId}")
     public ResponseEntity<?> deleteHistory(@PathVariable Long historyId){
-        historyService.deleteHistory(historyId);
+        historyCRUDService.deleteHistory(historyId);
         return ResponseEntity.ok().build();
     }
 
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class HistoryChangeDto {
+
+        private Long historyId;
+
+        @DateTimeFormat(pattern = "yyyy-MM-dd")
+        private LocalDate replaceDate;
+    }
 }
