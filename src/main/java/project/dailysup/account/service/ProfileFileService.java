@@ -8,10 +8,15 @@ import project.dailysup.file.ImageNotFoundException;
 import project.dailysup.common.exception.FailedFileSaveException;
 import project.dailysup.file.S3Repository;
 
+
+/**
+ * profile 사진 파일 저장을 위해
+ * Account Service 와 S3간 중개 역할을 하는 서비스.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ProfilePictureService {
+public class ProfileFileService {
 
     //Profile picture directory path in bucket
     private static final String PROFILE_PATH = "profile/";

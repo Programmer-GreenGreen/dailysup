@@ -4,7 +4,9 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.dailysup.account.service.AccountService;
+import project.dailysup.account.service.AccountInfoService;
+import project.dailysup.account.service.AccountQueryService;
+import project.dailysup.account.service.AccountRegisterService;
 
 @Slf4j
 @RestController
@@ -12,33 +14,35 @@ import project.dailysup.account.service.AccountService;
 @RequestMapping("/api/account/info")
 public class AccountInfoController {
 
-    private final AccountService accountService;
+    private final AccountRegisterService accountRegisterService;
+    private final AccountQueryService accountQueryService;
+    private final AccountInfoService accountInfoService;
 
 
     @GetMapping("/email")
     public ResponseEntity<?> getEmail(){
-        String email = accountService.getEmail();
+        String email = accountQueryService.getEmail();
         EmailDto dto = new EmailDto(email);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/email")
     public ResponseEntity<?> changeEmail(@RequestBody EmailDto emailDto){
-        accountService.changeEmail(emailDto);
+        accountInfoService.changeEmail(emailDto);
 
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/email")
     public ResponseEntity<?> deleteEmail(@RequestBody EmailDto emailDto){
-        accountService.deleteEmail();
+        accountInfoService.deleteEmail();
         return ResponseEntity.ok().build();
     }
 
 
     @PostMapping("/password")
     public ResponseEntity<?> changePassword(@RequestBody PasswordDto dto){
-        accountService.changePassword(dto);
+        accountInfoService.changePassword(dto);
 
         return ResponseEntity.ok().build();
     }

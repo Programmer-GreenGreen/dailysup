@@ -13,7 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import project.dailysup.account.service.AccountService;
+import project.dailysup.account.service.AccountInfoService;
+import project.dailysup.account.service.AccountQueryService;
+import project.dailysup.account.service.AccountRegisterService;
 
 @Slf4j
 @RestController
@@ -21,12 +23,13 @@ import project.dailysup.account.service.AccountService;
 @RequestMapping("/api/account/profile")
 public class AccountProfileController {
 
-    private final AccountService accountService;
+    private final AccountQueryService accountQueryService;
+    private final AccountInfoService accountInfoService;
 
     @GetMapping
     public ResponseEntity<Resource> getProfile(){
 
-        byte[] profilePicture = accountService.getProfilePicture();
+        byte[] profilePicture = accountQueryService.getProfilePicture();
         HttpHeaders header = new HttpHeaders();
         Resource rs = null;
 
@@ -39,13 +42,13 @@ public class AccountProfileController {
 
     @PostMapping
     public ResponseEntity<?> changeProfile(@NotNull @RequestParam("file") MultipartFile file){
-        accountService.changeProfilePicture(file);
+        accountInfoService.changeProfilePicture(file);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
     public ResponseEntity<?> deleteProfile(){
-        accountService.deleteProfilePicture();
+        accountInfoService.deleteProfilePicture();
         return ResponseEntity.ok().build();
     }
 

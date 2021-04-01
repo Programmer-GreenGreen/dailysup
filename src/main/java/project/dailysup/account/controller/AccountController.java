@@ -1,14 +1,15 @@
 package project.dailysup.account.controller;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.dailysup.account.domain.Account;
 import project.dailysup.account.dto.*;
-import project.dailysup.account.service.AccountService;
+import project.dailysup.account.service.AccountQueryService;
+import project.dailysup.account.service.AccountRegisterService;
 
 import javax.validation.Valid;
 
@@ -18,27 +19,47 @@ import javax.validation.Valid;
 @RequestMapping("/api/account")
 public class AccountController {
 
-    private final AccountService accountService;
+    private final AccountRegisterService accountRegisterService;
+    private final AccountQueryService accountQueryService;
 
     @GetMapping
-    public ResponseEntity<?> getCurrentUser() {
-        RetrieveAccountDto dto = accountService.findCurrentAccountDto();
+    public ResponseEntity<?> getCurrentAccount() {
+
+        Account findAccount =  accountQueryService.findCurrentAccount();
+
+        RetrieveAccountDto dto = RetrieveAccountDto.builder()
+                .loginId(findAccount.getLoginId())
+                .nickname(findAccount.getNickname())
+                .email(findAccount.getEmail())
+                .profilePictureUrl(findAccount.getProfilePictureUrl())
+                .build();
+
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequestDto dto) {
 
-        SignUpResponseDto signUpResponseDto = accountService.singUp(dto);
-        return ResponseEntity.ok(signUpResponseDto);
+        SignUpResponseDto signUpResponseDto
+                = accountRegisterService.singUp(dto.getLoginId(), dto.getPassword(), dto.getNickname());
+
+        return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
     }
 
+
     @DeleteMapping
-    public ResponseEntity<?> withdraw(@RequestBody WithdrawDto withdrawDto) {
-        LoginIdDto deletedId = accountService.withdraw(withdrawDto);
+    public ResponseEntity<?> withdraw(@RequestBody WithdrawDto dto) {
+
+        LoginIdDto deletedId = accountRegisterService.withdraw(dto.getLoginId(),dto.getPassword());
 
         return ResponseEntity.ok(deletedId);
     }
+
+
+
+    /**
+     * DTO
+     */
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -46,5 +67,20 @@ public class AccountController {
 
         private String loginId;
         private String password;
+    }
+
+    @Getter @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED) // used for serialized. (proxy)
+    public static class SignUpRequestDto {
+
+        @Length(min = 5, message = "ID는 5글자 이상이어야 합니다.")
+        private String loginId;
+
+        @Length(min = 5, message = "비밀번호는 5글자 이상이어야 합니다.")
+        private String password;
+
+        @Length(min = 5, message = "닉네임은 5글자 이상이어야 합니다.")
+        private String nickname;
+
     }
 }

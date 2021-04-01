@@ -1,16 +1,13 @@
 package project.dailysup.account.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import project.dailysup.account.dto.LogInRequestDto;
-import project.dailysup.account.service.AccountService;
+import project.dailysup.account.service.AccountAuthService;
 
 @Slf4j
 @RestController
@@ -18,19 +15,23 @@ import project.dailysup.account.service.AccountService;
 @RequestMapping("/api/account/auth")
 public class AccountAuthController {
 
-    private final AccountService accountService;
+    private final AccountAuthService accountAuthService;
 
 
     @PostMapping("/log-in")
-    public ResponseEntity<?> logIn(@RequestBody LogInRequestDto dto){
+    public ResponseEntity<?> createToken(@RequestBody LogInRequestDto dto){
         String loginId = dto.getLoginId();
         String password = dto.getPassword();
 
-        String jwtToken = accountService.logIn(loginId, password);
+        String jwtToken = accountAuthService.authAccount(loginId, password);
 
         return ResponseEntity.ok(new TokenResponseDto(jwtToken));
     }
 
+
+    /**
+     * DTO
+     */
 
     @Getter
     @AllArgsConstructor
@@ -38,5 +39,13 @@ public class AccountAuthController {
 
         private String jwtToken;
 
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class LogInRequestDto {
+
+        private String loginId;
+        private String password;
     }
 }
