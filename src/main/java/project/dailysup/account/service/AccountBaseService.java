@@ -18,7 +18,7 @@ public class AccountBaseService {
 
     private final AccountRepository accountRepository;
 
-    protected Account getCurrentAccount() {
+    public Account getCurrentAccount() {
         return accountRepository.findByLoginId(SecurityUtils.getCurrentLoginId())
                 .orElseThrow(UserNotFoundException::new);
     }
