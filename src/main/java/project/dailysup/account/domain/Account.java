@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import project.dailysup.account.exception.NotValidWithdrawRequest;
 import project.dailysup.common.BaseEntity;
 import project.dailysup.common.exception.InternalErrorException;
 import project.dailysup.device.domain.Device;
@@ -56,7 +57,6 @@ public class Account extends BaseEntity {
     @Column(nullable = false)
     private Boolean isActivated;
 
-
     @Builder
     public Account(String loginId, String password, PasswordEncoder passwordEncoder, String email, String nickname, String profilePictureUrl, Role role, Boolean isActivated) {
         this.loginId = loginId;
@@ -104,4 +104,20 @@ public class Account extends BaseEntity {
     public void changeNickname(String nickname){
         this.nickname = nickname;
     }
+
+    public void changeToNotActivated(String loginId, String password, PasswordEncoder passwordEncoder){
+        /*
+           DDD based Withdraw Validation
+         */
+
+        boolean isSameId = this.loginId.equals(loginId);
+        boolean isPasswordMatch = passwordEncoder.matches(this.password, password);
+
+        if(!isSameId || !isPasswordMatch){
+            throw new NotValidWithdrawRequest();
+        }
+
+        this.isActivated = false;
+    }
+
 }

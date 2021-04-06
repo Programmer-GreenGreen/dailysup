@@ -30,8 +30,6 @@ public class AccountRegisterService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final ProfileFileService profileService;
-
     public SignUpResponseDto singUp(String loginId, String password, String nickname){
 
         validateDuplicationAccount(loginId);
@@ -56,8 +54,14 @@ public class AccountRegisterService {
     public LoginIdDto withdraw(String loginId, String password){
         Account currentAccount = getCurrentAccount();
 
-        validateWithdrawRequest(loginId, password, currentAccount);
-        accountRepository.deleteByLoginId(loginId);
+        /**
+         * Vaildation Login은 도메인 안으로 변경.
+         */
+
+        //validateWithdrawRequest(loginId, password, currentAccount);
+        //accountRepository.deleteByLoginId(loginId);
+
+        currentAccount.changeToNotActivated(loginId, password, passwordEncoder);
         return LoginIdDto.of(loginId);
 
     }
@@ -75,15 +79,7 @@ public class AccountRegisterService {
     }
 
 
-    private void validateWithdrawRequest(String loginId, String password, Account currentAccount) {
 
-        boolean isSameId = loginId.equals(currentAccount.getLoginId());
-        boolean isPasswordMatch = passwordEncoder.matches(password, currentAccount.getPassword());
-
-        if(!isSameId || !isPasswordMatch){
-            throw new NotValidWithdrawRequest();
-        }
-    }
 
     private void validateDuplicationAccount(String loginId) {
         if(accountRepository.findByLoginId(loginId).orElse(null) != null){
