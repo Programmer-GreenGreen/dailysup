@@ -15,6 +15,7 @@ import project.dailysup.device.domain.Device;
 import project.dailysup.item.domain.Item;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,9 @@ public class Account extends BaseEntity {
 
     @Column(nullable = false)
     private Boolean isActivated;
+
+    @Embedded
+    private ResetToken resetToken;
 
     @Builder
     public Account(String loginId, String password, PasswordEncoder passwordEncoder, String email, String nickname, String profilePictureUrl, Role role, Boolean isActivated) {
@@ -120,4 +124,24 @@ public class Account extends BaseEntity {
         this.isActivated = false;
     }
 
+    public ResetToken getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetCode(String resetCode, LocalDateTime expire) {
+        this.resetToken = new ResetToken(resetCode, expire);
+    }
+
+    @Embeddable
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ResetToken {
+        private String resetCode;
+        private LocalDateTime expire;
+
+        public ResetToken(String resetCode, LocalDateTime expire) {
+            this.resetCode = resetCode;
+            this.expire = expire;
+        }
+    }
 }

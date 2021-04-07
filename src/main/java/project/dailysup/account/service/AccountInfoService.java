@@ -29,9 +29,9 @@ public class AccountInfoService extends AccountBaseService{
         findAccount.changeEmail("");
     }
 
-    public void changePassword(AccountInfoController.PasswordDto dto){
+    public void changePassword(String password){
         Account findAccount = getCurrentAccount();
-        findAccount.changePassword(passwordEncoder, dto.getPassword());
+        findAccount.changePassword(passwordEncoder, password);
     }
 
     public void changeProfilePicture(MultipartFile profilePicture){

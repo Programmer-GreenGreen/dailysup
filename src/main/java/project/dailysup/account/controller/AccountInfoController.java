@@ -14,7 +14,6 @@ import project.dailysup.account.service.AccountRegisterService;
 @RequestMapping("/api/account/info")
 public class AccountInfoController {
 
-    private final AccountRegisterService accountRegisterService;
     private final AccountQueryService accountQueryService;
     private final AccountInfoService accountInfoService;
 
@@ -42,7 +41,7 @@ public class AccountInfoController {
 
     @PostMapping("/password")
     public ResponseEntity<?> changePassword(@RequestBody PasswordDto dto){
-        accountInfoService.changePassword(dto);
+        accountInfoService.changePassword(dto.getPassword());
 
         return ResponseEntity.ok().build();
     }
