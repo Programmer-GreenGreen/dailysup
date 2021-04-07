@@ -22,6 +22,8 @@ jwt token starting with "Bearer: " in "Authorization" header.
 
 <br><br>
 
+<Strong> ---Invalid Api Doc---(수정중)</Strong>
+
 <h3> Account </h3>
 
 /api/account/
