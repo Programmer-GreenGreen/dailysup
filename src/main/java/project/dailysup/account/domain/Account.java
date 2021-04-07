@@ -22,6 +22,7 @@ import java.util.List;
 @JsonIgnoreType
 @Getter @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = @Index(columnList = "loginId", name = "idx_acc"))
 public class Account extends BaseEntity {
 
     private static final int ID_MAX_LENGTH = 30;

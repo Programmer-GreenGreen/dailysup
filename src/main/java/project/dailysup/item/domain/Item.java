@@ -17,6 +17,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = @Index(columnList = "scheduledDate", name = "idx_item"))
 public class Item extends BaseEntity {
 
     @Id
