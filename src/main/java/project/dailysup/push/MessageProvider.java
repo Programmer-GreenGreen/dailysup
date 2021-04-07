@@ -10,6 +10,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import project.dailysup.account.domain.Account;
 import project.dailysup.device.domain.Device;
+import project.dailysup.device.domain.DeviceRepository;
 import project.dailysup.device.service.DeviceService;
 import project.dailysup.item.domain.Item;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class MessageProvider {
 
     private final DeviceService deviceService;
+    private final DeviceRepository deviceRepository;
 
     private static final String NOTIFICATION_TITLE = "교체일 알림";
     private static final String NOTIFICATION_BODY = "교체 예정 용품이 있습니다.";
@@ -35,7 +37,7 @@ public class MessageProvider {
                 .forEach(item -> accountItem.add(item.getAccount(), item));
 
         List<Account> accountList = new ArrayList<>(accountItem.keySet());
-        List<Device> deviceList = deviceService.findByAccountList(accountList);
+        List<Device> deviceList = deviceRepository.findByAccountList(accountList);
 
         deviceList
                 .forEach(device -> accountDeviceToken.add(device.getAccount(), device.getFcmToken()));
