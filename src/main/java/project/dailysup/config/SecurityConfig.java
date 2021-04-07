@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -45,8 +46,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/h2-console/**",
                         "/favicon.ico",
                         "/error",
-                        "/api/account/sign-up",
-                        "/api/account/log-in",
                         "/api/echo/**"
                 )
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
@@ -57,6 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
+                .mvcMatchers("/api/account/auth/log-in",
+                        "/api/account/forget/**").permitAll()
+                .mvcMatchers(HttpMethod.POST,"/api/account").permitAll()
                 .anyRequest().authenticated()
                 .expressionHandler(expressionHandler());
 
