@@ -40,7 +40,6 @@ public class AccountForgetService {
             account.setResetCode(code, LocalDateTime.now().plusMinutes(5));
 
             MailDto dto = new MailDto(email, "비밀번호 변경 메일", "code: " + code);
-            //TODO : send Email
 
             try {
                 mailService.send(dto);
