@@ -12,8 +12,8 @@ import project.dailysup.account.domain.AccountRepository;
 import project.dailysup.account.exception.NotValidResetTokenException;
 import project.dailysup.account.exception.UserNotFoundException;
 import project.dailysup.common.exception.InternalErrorException;
-import project.dailysup.common.mail.MailDto;
-import project.dailysup.common.mail.MailService;
+import project.dailysup.mail.MailDto;
+import project.dailysup.mail.MailService;
 
 import java.time.LocalDateTime;
 import java.util.Random;
