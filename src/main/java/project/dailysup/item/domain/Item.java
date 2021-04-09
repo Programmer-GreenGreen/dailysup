@@ -44,13 +44,17 @@ public class Item extends BaseEntity {
 
 
     @Builder
-    public Item(Account account, String title,
-                LocalDate scheduledDate, Integer cycle,
-                History history) {
-        this.account = account;
+    public Item(String title,
+                LocalDate scheduledDate, Integer cycle) {
         this.title = title;
         this.scheduledDate = scheduledDate;
         this.cycle = cycle;
+    }
+
+    public Long addAccount(Account account){
+        account.addItem(this);
+        this.account = account;
+        return account.getId();
     }
 
     public void changeTitle(String title){
@@ -67,7 +71,9 @@ public class Item extends BaseEntity {
     public void changeScheduledDate(LocalDate scheduledDate){this.scheduledDate = scheduledDate;}
 
     public void addHistory(History history){
-        // Item은 연관관계의 주인이 아님을 유의.
+        // Item 은 연관관계의 주인이 아님을 유의.
+        // item 은 aggre. root
+        this.history.add(history);
         history.addHistoryToItem(this);
     }
 

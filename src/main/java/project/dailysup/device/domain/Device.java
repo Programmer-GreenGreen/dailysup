@@ -27,15 +27,7 @@ public class Device extends BaseEntity {
 
     public Device(String fcmToken, Account account) {
         this.fcmToken = fcmToken;
-        setUpAccount(account);
-    }
 
-    /**
-     * 연관관계 편의 메소드
-     */
-    public void setUpAccount(Account account){
-        account.getDeviceList().add(this);
-        this.account = account;
     }
 
 

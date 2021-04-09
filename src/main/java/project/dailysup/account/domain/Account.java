@@ -74,15 +74,29 @@ public class Account extends BaseEntity {
     }
 
 
-    public void addDevice(Device device){
+    public String addDevice(Device device){
         this.deviceList.add(device);
+        return device.getFcmToken();
     }
 
     public boolean removeDevice(String fcmToken){
         return deviceList.stream()
                 .filter(d -> d.getFcmToken().equals(fcmToken))
                 .findFirst()
-                .filter(d -> deviceList.remove(d))
+                .filter(deviceList::remove)
+                .isPresent();
+
+    }
+
+    public void addItem(Item item){
+        this.itemList.add(item);
+    }
+
+    public boolean removeItem(Long itemId){
+        return itemList.stream()
+                .filter(i -> i.getId().equals(itemId))
+                .findFirst()
+                .filter(itemList::remove)
                 .isPresent();
 
     }
@@ -114,9 +128,8 @@ public class Account extends BaseEntity {
         /*
            DDD based Withdraw Validation
          */
-
         boolean isSameId = this.loginId.equals(loginId);
-        boolean isPasswordMatch = passwordEncoder.matches(this.password, password);
+        boolean isPasswordMatch = passwordEncoder.matches(password,this.password);
 
         if(!isSameId || !isPasswordMatch){
             throw new NotValidWithdrawRequest();

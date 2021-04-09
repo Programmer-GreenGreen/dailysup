@@ -12,10 +12,6 @@ src/main/resources/firebase-adminsdk.json
 
 ###############################################################
 
-
-### exclude test - because ./gradlew build in ec2 is stucked testing. why? ###
-src/test/**/*
-
 ### Local File upload ###
 files/
 

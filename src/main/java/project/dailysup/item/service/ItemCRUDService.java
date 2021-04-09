@@ -32,11 +32,11 @@ public class ItemCRUDService {
         Account findAccount = accountBaseService.getCurrentAccount();
 
         Item item = Item.builder()
-                .account(findAccount)
                 .title(dto.getTitle())
                 .scheduledDate(dto.getStartDate().plusDays(dto.getCycle()))
                 .cycle(dto.getCycle())
                 .build();
+        item.addAccount(findAccount);
 
         //add item with first history
         item.addHistory(new History(item,dto.getStartDate()));

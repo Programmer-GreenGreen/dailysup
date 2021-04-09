@@ -40,7 +40,7 @@ public class RequestLoggingAspect {
 
     }
 
-    // get requset value
+    // get request value
     private String getRequestParams() {
 
         String params = "";
