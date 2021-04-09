@@ -2,97 +2,115 @@ package project.dailysup.account.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import project.dailysup.device.domain.Device;
-import project.dailysup.histroy.domain.History;
 import project.dailysup.item.domain.Item;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.Month;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-class AccountTest {
+/**
+ * Account Entity 의 테스트 코드
+ * 타 엔티티와 연관된 메서드는 리포지토리 테스트에서 실행한다.
+ */
 
-    PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    static final String testLoginId = "testLoginId";
-    static final String testPassword = "testPassword";
-    static final String testEmail = "test@test.com";
-    static final String testNickname = "nickname";
-    static final String testURl = "someUrl";
+class AccountTest extends AccountTestBase {
+
 
     @Test
-    @DisplayName("Account 최소 생성 테스트")
-    public void create_account_test_1 () throws Exception{
+    @DisplayName("Account 생성 테스트: 생성자(빌더)와 getter 를 테스트한다.")
+    public void create_account_test() throws Exception{
         //given
 
-        Account createdAccount = createAccount(testLoginId, testPassword, testNickname);
+        Account account = createDefaultAccount();
+
+
         //when
-        String loginId_out = createdAccount.getLoginId();
-        String password_out = createdAccount.getPassword();
-        String nickName_out = createdAccount.getNickname();
+        String loginId_out = account.getLoginId();
+        String password_out = account.getPassword();
+        String nickName_out = account.getNickname();
+
+        String nickname = account.getNickname();
+        String email = account.getEmail();
+        String profilePictureUrl = account.getProfilePictureUrl();
+        Role role = account.getRole();
+
 
         //then
+        assertThat(nickname).isEqualTo("nickname");
+        assertThat(email).isEqualTo("test@test.com");
+        assertThat(profilePictureUrl).isEqualTo("someUrl");
+        assertThat(role).isEqualTo(Role.USER);
 
         assertThat(testLoginId).isEqualTo(loginId_out);
         assertThat(testPassword).isNotEqualTo(password_out);
         assertTrue(passwordEncoder.matches(testPassword,password_out));
         assertThat(testNickname).isEqualTo(nickName_out);
-    }
 
-    private Account createAccount(String loginId_in, String password_in, String nickname_in) {
-        return Account.builder()
-                .loginId(loginId_in)
-                .password(password_in)
-                .passwordEncoder(passwordEncoder)
-                .nickname(nickname_in)
-                .build();
+        assertThat(account.getItemList())
+                .extracting("title")
+                .containsExactlyInAnyOrder(testItem1, testItem2);
+        assertThat(account.getDeviceList())
+                .extracting("fcmToken")
+                .containsExactlyInAnyOrder(testToken1, testToken2);
+
     }
 
     @Test
-    @DisplayName("Account 최대 생성 테스트")
-    public void create_account_test_2() throws Exception{
+    @DisplayName("Reset Token 테스트")
+    public void reset_token_test() throws Exception{
         //given
-
-        Account account = Account.builder()
-                .loginId(testLoginId)
-                .password(testPassword)
-                .passwordEncoder(passwordEncoder)
-                .email(testEmail)
-                .nickname(testNickname)
-                .profilePictureUrl(testURl)
-                .role(Role.USER)
-                .isActivated(true)
-                .build();
-
-        account.addDevice(new Device("fcmtoken1",account));
-        account.addDevice(new Device("fcmtoken2",account));
-        account.removeDevice("fcmtoken2");
-
-        account.addItem(new Item("testItem", LocalDate.now(),18));
-        account.addItem(new Item("testItem2", LocalDate.now(), 18));
-
-        account.changeToNotActivated(testLoginId, testPassword, passwordEncoder);
+        Account account = createDefaultAccount();
+        String code = "reset";
+        LocalDateTime expire = LocalDateTime.of(2021, Month.JULY, 12, 2, 11);
 
         //when
-        String nickname = account.getNickname();
-        String email = account.getEmail();
-        String profilePictureUrl = account.getProfilePictureUrl();
-        Role role = account.getRole();
+
+        account.setResetCode(code, expire);
+        Account.ResetToken resetToken = account.getResetToken();
+
+        //then
+        assertThat(resetToken.getResetCode()).isEqualTo("reset");
+        assertThat(resetToken.getExpire()).isEqualTo(expire);
+
+    }
+
+
+    @Test
+    @DisplayName("회원 탈퇴 테스트: 탈퇴 후에는 activated가 false여야 한다.")
+    public void withdraw_test () throws Exception{
+        //given
+        Account account = createDefaultAccount();
+
+        //when
+        account.changeToNotActivated(testLoginId, testPassword, passwordEncoder);
         Boolean isActivated = account.getIsActivated();
+
         //then
 
-        assertThat(nickname).isEqualTo("nickname");
-        assertThat(email).isEqualTo("test@test.com");
-        assertThat(profilePictureUrl).isEqualTo("someUrl");
-        assertThat(role).isEqualTo(Role.USER);
         assertFalse(isActivated);
-
-        assertThat(account.getDeviceList())
-                .extracting("fcmToken")
-                .containsOnly("fcmtoken1");
     }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트")
+    public void change_password_test() throws Exception{
+        //given
+        Account account = createDefaultAccount();
+        String newPassword = "newPassword";
+
+        //when
+        account.changePassword(passwordEncoder, newPassword);
+
+        //then
+        assertTrue(passwordEncoder.matches(newPassword, account.getPassword()));
+
+    }
+
+
+
 }
