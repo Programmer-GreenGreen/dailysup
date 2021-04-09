@@ -1,4 +1,4 @@
-package project.dailysup.common.mail;
+package project.dailysup.mail;
 
 
 import lombok.AllArgsConstructor;
