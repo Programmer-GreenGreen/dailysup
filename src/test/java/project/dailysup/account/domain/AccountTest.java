@@ -16,7 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Account Entity 의 테스트 코드
- * 타 엔티티와 연관된 메서드는 리포지토리 테스트에서 실행한다.
+ * 타 엔티티와 연관된 메서드나 Validation 테스트는
+ * 리포지토리 테스트에서 실행한다.
  */
 
 class AccountTest extends AccountTestBase {

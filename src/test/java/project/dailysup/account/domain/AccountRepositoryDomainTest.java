@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import project.dailysup.account.exception.InvalidPasswordException;
 
 
 import javax.validation.ConstraintViolationException;
@@ -117,6 +118,54 @@ public class AccountRepositoryDomainTest {
 
         //then
         assertThrows(ConstraintViolationException.class, ()->accountRepository.saveAndFlush(account));
+    }
+
+
+    @Test
+    @DisplayName("password 변경 검증: password encoder가 null일 때")
+    public void password_encoder_null_test() throws Exception{
+        //then
+        assertThrows(InvalidPasswordException.class,()->{
+            Account.builder()
+                    .loginId("loginId")
+                    .password("password")
+                    .nickname("nickname")
+                    .isActivated(true)
+                    .role(Role.USER)
+                    .build();
+        });
+    }
+
+    @Test
+    @DisplayName("password 변경 검증: password가 null일 때")
+    public void password_null_test() throws Exception{
+        //then
+        //then
+        assertThrows(InvalidPasswordException.class,()->{
+            Account.builder()
+                    .loginId("loginId")
+                    .password("password")
+                    .nickname("nickname")
+                    .isActivated(true)
+                    .role(Role.USER)
+                    .build();
+        });
+    }
+
+    @Test
+    @DisplayName("password 변경 검증: password가 빈문자열 일 때")
+    public void password_empty_test() throws Exception{
+        //then
+        //then
+        assertThrows(InvalidPasswordException.class,()->{
+            Account.builder()
+                    .loginId("loginId")
+                    .password("")
+                    .nickname("nickname")
+                    .isActivated(true)
+                    .role(Role.USER)
+                    .build();
+        });
     }
 
     private Account getNotNullOnlyAccount(String loginId, String password, String nickname) {

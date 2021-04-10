@@ -16,6 +16,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Account JPA Repository Query method 를 테스트한다.
+ * Validation 테스트는 Domain test 에서 수행한다.
+ */
 
 @DataJpaTest
 class AccountRepositoryQueryMethodTest {
