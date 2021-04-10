@@ -73,13 +73,13 @@ public class AccountController {
     @NoArgsConstructor(access = AccessLevel.PROTECTED) // used for serialized. (proxy)
     public static class SignUpRequestDto {
 
-        @Length(min = 5, message = "ID는 5글자 이상이어야 합니다.")
+        @Length(min = 5, max = 30)
         private String loginId;
 
-        @Length(min = 5, message = "비밀번호는 5글자 이상이어야 합니다.")
+        @Length(min = 5)
         private String password;
 
-        @Length(min = 5, message = "닉네임은 5글자 이상이어야 합니다.")
+        @Length(min = 5, max = 30)
         private String nickname;
 
     }

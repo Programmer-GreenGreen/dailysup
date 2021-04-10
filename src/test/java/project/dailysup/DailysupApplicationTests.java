@@ -8,10 +8,9 @@ import org.springframework.context.annotation.PropertySources;
 
 @SpringBootTest(
     properties = {"spring.config.location="
-            +"classpath:/application.yml"
+            +"classpath:/application-test.yml"
             +",classpath:/jwt.yml"+
-            ",classpath:/s3.yml"}
-)
+            ",classpath:/s3.yml"})
 class DailysupApplicationTests {
 
     @Test

@@ -20,6 +20,17 @@ public class AccountTestBase {
     String testItem1 = "testItem1";
     String testItem2 = "testItem2";
 
+    public Account createNotNullOnlyAccount(){
+        return Account.builder()
+                .loginId(testLoginId)
+                .password(testPassword)
+                .passwordEncoder(passwordEncoder)
+                .nickname(testNickname)
+                .role(Role.USER)
+                .isActivated(true)
+                .build();
+    }
+
     public Account createDefaultAccount() {
         Account account = Account.builder()
                 .loginId(testLoginId)
@@ -34,13 +45,12 @@ public class AccountTestBase {
 
 
         account.addDevice(new Device(testToken1,account));
-
         account.addDevice(new Device(testToken2,account));
 
 
         account.addItem(new Item(testItem1, LocalDate.now(),18));
-
         account.addItem(new Item(testItem2, LocalDate.now(), 18));
+
         return account;
     }
 }

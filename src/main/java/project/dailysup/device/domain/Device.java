@@ -27,7 +27,7 @@ public class Device extends BaseEntity {
 
     public Device(String fcmToken, Account account) {
         this.fcmToken = fcmToken;
-
+        this.account = account;
     }
 
 

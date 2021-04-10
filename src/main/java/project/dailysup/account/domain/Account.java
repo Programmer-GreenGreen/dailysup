@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import project.dailysup.account.exception.NotValidWithdrawRequest;
@@ -25,23 +26,30 @@ import java.util.List;
 @Table(indexes = @Index(columnList = "loginId", name = "idx_acc"))
 public class Account extends BaseEntity {
 
+
+    private static final int ID_MIN_LENGTH = 5;
     private static final int ID_MAX_LENGTH = 30;
+    private static final int NICKNAME_MIN_LENGTH = 5;
+    private static final int NICKNAME_MAX_LENGTH = 30;
 
     @Id
     @GeneratedValue
     @Column(name = "acccount_id")
     private Long id;
 
-    @Column(length = ID_MAX_LENGTH, updatable = false, nullable = false, unique = true)
+    @Column(updatable = false, nullable = false, unique = true)
+    @Length(min = ID_MIN_LENGTH, max = ID_MAX_LENGTH)
     private String loginId;
 
 
     @Column(nullable = false)
     private String password;
 
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false)
+    @Length(min = NICKNAME_MIN_LENGTH, max = NICKNAME_MAX_LENGTH)
     private String nickname;
 
     private String profilePictureUrl;
