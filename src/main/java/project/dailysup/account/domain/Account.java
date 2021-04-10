@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import project.dailysup.account.exception.NotValidWithdrawRequest;
 import project.dailysup.common.BaseEntity;
 import project.dailysup.common.exception.InternalErrorException;
@@ -132,6 +133,9 @@ public class Account extends BaseEntity {
 
     public void changePassword(PasswordEncoder encoder, String password){
         if(encoder == null || encoder instanceof NoOpPasswordEncoder){
+            throw new InternalErrorException("비밀번호 변경에 오류가 있습니다.");
+        }
+        if(!StringUtils.hasText(password)){
             throw new InternalErrorException("비밀번호 변경에 오류가 있습니다.");
         }
         this.password = encoder.encode(password);
