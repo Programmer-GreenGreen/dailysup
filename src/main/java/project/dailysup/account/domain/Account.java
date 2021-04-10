@@ -16,6 +16,7 @@ import project.dailysup.device.domain.Device;
 import project.dailysup.item.domain.Item;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +28,10 @@ import java.util.List;
 public class Account extends BaseEntity {
 
 
-    private static final int ID_MIN_LENGTH = 5;
-    private static final int ID_MAX_LENGTH = 30;
-    private static final int NICKNAME_MIN_LENGTH = 5;
-    private static final int NICKNAME_MAX_LENGTH = 30;
+
+    /**
+     *  Unique 하면서 Not Null 한 필드들
+     */
 
     @Id
     @GeneratedValue
@@ -42,21 +43,45 @@ public class Account extends BaseEntity {
     private String loginId;
 
 
-    @Column(nullable = false)
-    private String password;
-
-    @Column(unique = true)
-    private String email;
-
+    /**
+     * Nullable 하기만 한 필드들
+     */
     @Column(nullable = false)
     @Length(min = NICKNAME_MIN_LENGTH, max = NICKNAME_MAX_LENGTH)
     private String nickname;
 
-    private String profilePictureUrl;
+    @Column(nullable = false)
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(nullable = false)
+    private Boolean isActivated;
+
+
+    /**
+     * Unique 하기만 한 빌드들
+     */
+
+    @Column(unique = true)
+    private String email;
+
+
+
+
+    /**
+     * 제약조건 없는 필드들
+     */
+
+    @Embedded
+    private ResetToken resetToken; // 이메일 인증시 발송되는 토큰.
+    private String profilePictureUrl;
+
+    /**
+     *  연관관계 매핑
+     */
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Device> deviceList = new ArrayList<>();
@@ -64,27 +89,19 @@ public class Account extends BaseEntity {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Item> itemList = new ArrayList<>();
 
-    @Column(nullable = false)
-    private Boolean isActivated;
 
-    @Embedded
-    private ResetToken resetToken;
-
-    @Builder
-    public Account(String loginId, String password, PasswordEncoder passwordEncoder, String email, String nickname, String profilePictureUrl, Role role, Boolean isActivated) {
-        this.loginId = loginId;
-        this.changePassword(passwordEncoder, password);
-        this.email = email;
-        this.nickname = nickname;
-        this.profilePictureUrl = profilePictureUrl;
-        this.role = role;
-        this.isActivated = isActivated;
-    }
-
+    /**
+     * Composition 관계의 객체 CRUD 메서드
+     * Account가 연관관계의 주인은 아니나, Aggregation root 이다.
+     */
 
     public String addDevice(Device device){
         this.deviceList.add(device);
         return device.getFcmToken();
+    }
+
+    public void changeDeviceList(List<Device> deviceList){
+        this.deviceList = deviceList;
     }
 
     public boolean removeDevice(String fcmToken){
@@ -109,9 +126,9 @@ public class Account extends BaseEntity {
 
     }
 
-    public void changeDeviceList(List<Device> deviceList){
-        this.deviceList = deviceList;
-    }
+    /**
+     * DDD 메서드. 검증 로직이 들어있다.
+     */
 
     public void changePassword(PasswordEncoder encoder, String password){
         if(encoder == null || encoder instanceof NoOpPasswordEncoder){
@@ -133,9 +150,7 @@ public class Account extends BaseEntity {
     }
 
     public void changeToNotActivated(String loginId, String password, PasswordEncoder passwordEncoder){
-        /*
-           DDD based Withdraw Validation
-         */
+
         boolean isSameId = this.loginId.equals(loginId);
         boolean isPasswordMatch = passwordEncoder.matches(password,this.password);
 
@@ -154,6 +169,23 @@ public class Account extends BaseEntity {
         this.resetToken = new ResetToken(resetCode, expire);
     }
 
+
+
+    @Builder
+    public Account(String loginId, String password, PasswordEncoder passwordEncoder, String email, String nickname, String profilePictureUrl, Role role, Boolean isActivated) {
+        this.loginId = loginId;
+        this.changePassword(passwordEncoder, password);
+        this.email = email;
+        this.nickname = nickname;
+        this.profilePictureUrl = profilePictureUrl;
+        this.role = role;
+        this.isActivated = isActivated;
+    }
+
+
+    /**
+     * DTO
+     */
     @Embeddable
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -166,4 +198,13 @@ public class Account extends BaseEntity {
             this.expire = expire;
         }
     }
+
+    /**
+     * 필드 길이 제약조건
+     */
+
+    private static final int ID_MIN_LENGTH = 5;
+    private static final int ID_MAX_LENGTH = 30;
+    private static final int NICKNAME_MIN_LENGTH = 5;
+    private static final int NICKNAME_MAX_LENGTH = 30;
 }
