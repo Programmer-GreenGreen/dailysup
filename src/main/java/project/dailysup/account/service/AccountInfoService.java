@@ -64,4 +64,9 @@ public class AccountInfoService extends AccountBaseService{
         this.profileFileService = profileFileService;
         this.passwordEncoder = passwordEncoder;
     }
+
+    public void changeNickname(String nickname) {
+        Account findAccount = getCurrentAccount();
+        findAccount.changeNickname(nickname);
+    }
 }

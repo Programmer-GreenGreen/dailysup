@@ -25,11 +25,19 @@ public class AccountQueryService extends AccountBaseService {
         return findAccount.getEmail();
     }
 
+    public String getNickname(){
+        Account findAccount = getCurrentAccount();
+        return findAccount.getNickname();
+    }
+
     public byte[] getProfilePicture(){
         Account currentAccount = getCurrentAccount();
 
         return profileFileService.download(currentAccount.getProfilePictureUrl());
     }
+
+
+
 
 
     public AccountQueryService(AccountRepository accountRepository, ProfileFileService profileFileService) {

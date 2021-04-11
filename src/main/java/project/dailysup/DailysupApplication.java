@@ -21,4 +21,7 @@ public class DailysupApplication {
                 .run();
     }
 
+    //TODO: 도메인 롬복빌더 교체하기.
+    //TODO: 비지니스 exception 줄이고 exception code 로 관리 + code 는 enum으로
+
 }

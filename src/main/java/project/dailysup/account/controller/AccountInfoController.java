@@ -46,7 +46,22 @@ public class AccountInfoController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/nickname")
+    public ResponseEntity<?> getNickname(){
+        String nickname = accountQueryService.getNickname();
+        return ResponseEntity.ok(new NicknameDto(nickname));
+    }
 
+    @PostMapping("/nickname")
+    public ResponseEntity<?> changeNickname(@RequestBody NicknameDto dto){
+        accountInfoService.changeNickname(dto.getNickname());
+        return ResponseEntity.ok().build();
+    }
+
+
+    /**
+     * DTO
+     */
 
 
 
@@ -55,6 +70,14 @@ public class AccountInfoController {
     @AllArgsConstructor
     public static class EmailDto {
         private String email;
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor
+    public static class NicknameDto{
+        private String nickname;
+
     }
 
     @Getter

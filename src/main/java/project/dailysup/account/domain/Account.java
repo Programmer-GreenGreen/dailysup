@@ -61,16 +61,12 @@ public class Account extends BaseEntity {
     @Column(nullable = false)
     private Boolean isActivated;
 
-
     /**
      * Unique 하기만 한 빌드들
      */
 
     @Column(unique = true)
     private String email;
-
-
-
 
     /**
      * 제약조건 없는 필드들
@@ -150,6 +146,9 @@ public class Account extends BaseEntity {
     }
 
     public void changeNickname(String nickname){
+        if(!StringUtils.hasText(nickname)){
+            throw new IllegalStateException("닉네임 변경에 오류가 있습니다.");
+        }
         this.nickname = nickname;
     }
 
