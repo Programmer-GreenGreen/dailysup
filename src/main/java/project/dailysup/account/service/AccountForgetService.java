@@ -74,7 +74,7 @@ public class AccountForgetService {
         }
         Account account = accountRepository
                 .findByLoginId(loginId).orElseThrow(UserNotFoundException::new);
-        account.changePassword(passwordEncoder, password);
+        account.setPassword(passwordEncoder, password);
 
     }
 

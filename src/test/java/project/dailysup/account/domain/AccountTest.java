@@ -2,12 +2,7 @@ package project.dailysup.account.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import project.dailysup.device.domain.Device;
-import project.dailysup.item.domain.Item;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 
@@ -98,20 +93,36 @@ class AccountTest extends AccountTestBase {
     }
 
     @Test
-    @DisplayName("비밀번호 변경 테스트")
-    public void change_password_test() throws Exception{
+    @DisplayName("비밀번호 재설정 테스트")
+    public void set_password_test() throws Exception{
         //given
         Account account = createDefaultAccount();
         String newPassword = "newPassword";
 
         //when
-        account.changePassword(passwordEncoder, newPassword);
+        account.setPassword(passwordEncoder, newPassword);
 
         //then
         assertTrue(passwordEncoder.matches(newPassword, account.getPassword()));
 
     }
 
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트")
+    public void change_password_test() throws Exception{
+        //given
+        Account account = createDefaultAccount();
+        String oldPassword = testPassword;
+        String newPassword = "newPassword";
+
+        //when
+        account.changePassword(passwordEncoder, oldPassword, newPassword);
+
+        //then
+        assertTrue(passwordEncoder.matches(newPassword, account.getPassword()));
+
+    }
 
 
 }

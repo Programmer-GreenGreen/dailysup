@@ -41,7 +41,7 @@ public class AccountInfoController {
 
     @PostMapping("/password")
     public ResponseEntity<?> changePassword(@RequestBody PasswordDto dto){
-        accountInfoService.changePassword(dto.getPassword());
+        accountInfoService.changePassword(dto.getOldPassword(), dto.getNewPassword());
 
         return ResponseEntity.ok().build();
     }
@@ -83,7 +83,7 @@ public class AccountInfoController {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PasswordDto {
-
-        private String password;
+        private String oldPassword;
+        private String newPassword;
     }
 }

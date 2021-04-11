@@ -1,6 +1,5 @@
 package project.dailysup.account.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,9 @@ public class AccountInfoService extends AccountBaseService{
     private final ProfileFileService profileFileService;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     *  이메일 변경, 삭제 서비스
+     */
     public void changeEmail(AccountInfoController.EmailDto emailDto) {
         Account findAccount = getCurrentAccount();
         findAccount.changeEmail(emailDto.getEmail());
@@ -29,9 +31,9 @@ public class AccountInfoService extends AccountBaseService{
         findAccount.changeEmail("");
     }
 
-    public void changePassword(String password){
+    public void changePassword(String oldPassword, String newPassword){
         Account findAccount = getCurrentAccount();
-        findAccount.changePassword(passwordEncoder, password);
+        findAccount.changePassword(passwordEncoder, oldPassword, newPassword);
     }
 
     public void changeProfilePicture(MultipartFile profilePicture){

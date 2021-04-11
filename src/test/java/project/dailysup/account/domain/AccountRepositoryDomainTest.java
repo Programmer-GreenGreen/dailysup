@@ -15,7 +15,6 @@ import javax.validation.ConstraintViolationException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-//@IntegrationTest
 @DataJpaTest
 public class AccountRepositoryDomainTest {
 

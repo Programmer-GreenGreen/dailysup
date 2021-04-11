@@ -13,7 +13,6 @@ import org.springframework.util.StringUtils;
 import project.dailysup.account.exception.InvalidPasswordException;
 import project.dailysup.account.exception.NotValidWithdrawRequest;
 import project.dailysup.common.BaseEntity;
-import project.dailysup.common.exception.InternalErrorException;
 import project.dailysup.device.domain.Device;
 import project.dailysup.item.domain.Item;
 
@@ -123,11 +122,16 @@ public class Account extends BaseEntity {
 
     }
 
+
     /**
      * DDD 메서드. 검증 로직이 들어있다.
      */
 
-    public void changePassword(PasswordEncoder encoder, String password){
+
+    /**
+     * 비밀번호를 새로 설정한다.
+     */
+    public void setPassword(PasswordEncoder encoder, String password){
         if(encoder == null || encoder instanceof NoOpPasswordEncoder){
             throw new InvalidPasswordException("비밀번호 변경에 오류가 있습니다.");
         }
@@ -135,6 +139,18 @@ public class Account extends BaseEntity {
             throw new InvalidPasswordException("비밀번호 변경에 오류가 있습니다.");
         }
         this.password = encoder.encode(password);
+    }
+
+    /**
+     * 비밀번호를 변경한다.
+     */
+
+    public void changePassword(PasswordEncoder encoder, String oldPassword, String newPassword){
+        boolean isPasswordMatch = encoder.matches(oldPassword, this.password);
+        if(!isPasswordMatch){
+            throw new InvalidPasswordException("비밀번호 변경에 오류가 있습니다.");
+        }
+        setPassword(encoder, newPassword);
     }
 
     public void changeEmail(String email){
@@ -152,6 +168,10 @@ public class Account extends BaseEntity {
         this.nickname = nickname;
     }
 
+    /**
+     *  회원 탈퇴한다. ( DB 에서 삭제가 아니라 활성화 상태를 false로 만든다.)
+     */
+
     public void changeToNotActivated(String loginId, String password, PasswordEncoder passwordEncoder){
 
         boolean isSameId = this.loginId.equals(loginId);
@@ -163,6 +183,10 @@ public class Account extends BaseEntity {
 
         this.isActivated = false;
     }
+
+    /**
+     * 비밀번호 재설정 토큰
+     */
 
     public ResetToken getResetToken() {
         return resetToken;
@@ -177,7 +201,7 @@ public class Account extends BaseEntity {
     @Builder
     public Account(String loginId, String password, PasswordEncoder passwordEncoder, String email, String nickname, String profilePictureUrl, Role role, Boolean isActivated) {
         this.loginId = loginId;
-        this.changePassword(passwordEncoder, password);
+        this.setPassword(passwordEncoder, password);
         this.email = email;
         this.nickname = nickname;
         this.profilePictureUrl = profilePictureUrl;
