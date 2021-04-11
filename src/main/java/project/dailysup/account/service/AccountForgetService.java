@@ -29,6 +29,9 @@ public class AccountForgetService {
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
 
+    private static final int MAIL_EXPIRE_MINUTE = 5;
+    private static final int CODE_LENGTH = 6;
+
 
     public void sendTokenByEmail(String loginId) {
         Account account = accountRepository
@@ -36,8 +39,8 @@ public class AccountForgetService {
         String email = account.getEmail();
 
         if(StringUtils.hasText(email)){
-            String code = createResetCode(6);
-            account.setResetCode(code, LocalDateTime.now().plusMinutes(5));
+            String code = createResetCode(CODE_LENGTH);
+            account.setResetCode(code, LocalDateTime.now().plusMinutes(MAIL_EXPIRE_MINUTE));
 
             MailDto dto = new MailDto(email, "비밀번호 변경 메일", "code: " + code);
 

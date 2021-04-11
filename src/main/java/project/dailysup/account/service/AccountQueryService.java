@@ -14,7 +14,6 @@ import project.dailysup.util.SecurityUtils;
 @Transactional(readOnly = true)
 public class AccountQueryService extends AccountBaseService {
 
-    private final AccountRepository accountRepository;
     private final ProfileFileService profileFileService;
 
     public Account findCurrentAccount(){
@@ -33,9 +32,8 @@ public class AccountQueryService extends AccountBaseService {
     }
 
 
-    public AccountQueryService(AccountRepository accountRepository, AccountRepository accountRepository1, ProfileFileService profileFileService) {
+    public AccountQueryService(AccountRepository accountRepository, ProfileFileService profileFileService) {
         super(accountRepository);
-        this.accountRepository = accountRepository1;
         this.profileFileService = profileFileService;
     }
 }
