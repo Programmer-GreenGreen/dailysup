@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import project.dailysup.logging.LogCode;
+import project.dailysup.logging.LogFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Duration;
@@ -25,54 +27,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RequestLoggingAspect {
 
-    private final ObjectMapper mapper;
-
 
     @Around("bean(*Controller)")
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
 
-        long startAt = System.currentTimeMillis();
+        Long startAt = System.currentTimeMillis();
 
         Object result = pjp.proceed();
 
-        long endAt = System.currentTimeMillis();
+        Long endAt = System.currentTimeMillis();
 
         String className = pjp.getSignature().getDeclaringTypeName();
         String methodName = pjp.getSignature().getName();
-        long duration = endAt - startAt;
+        Long duration = endAt - startAt;
 
-
-        PerformanceLogging logObject = PerformanceLogging.builder()
-                .title("Controller Performance Logging")
-                .classname(className)
-                .methodName(methodName)
-                .executionTime(Duration.ofMillis(duration))
-                .build();
-
-
-        log.info(mapper.writeValueAsString(logObject));
-
+        log.info(LogFactory.createLog(LogCode.PERF_CONT, className, methodName, duration.toString()));
         return result;
     }
 
-    //TODO: title enum으로 바꾸기
-    @Getter
-    static class PerformanceLogging{
-        private String title;
-        private String classname;
-        private String methodName;
-        private Duration executionTime;
 
-        @Builder
-        public PerformanceLogging(String title, String classname, String methodName, Duration executionTime) {
-            this.title = title;
-            this.classname = classname;
-            this.methodName = methodName;
-            this.executionTime = executionTime;
-        }
-    }
-
-    public RequestLoggingAspect(ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
 }
