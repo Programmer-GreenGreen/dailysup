@@ -1,6 +1,10 @@
 package project.dailysup.aop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -11,6 +15,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -19,51 +25,54 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RequestLoggingAspect {
 
+    private final ObjectMapper mapper;
+
+
     @Around("bean(*Controller)")
     public Object logging(ProceedingJoinPoint pjp) throws Throwable {
 
-        String params = getRequestParams();
-
         long startAt = System.currentTimeMillis();
-
-        log.info("REQUEST : {}({}) = {}", pjp.getSignature().getDeclaringTypeName(),
-                pjp.getSignature().getName(), params);
 
         Object result = pjp.proceed();
 
         long endAt = System.currentTimeMillis();
 
-        log.info("RESPONSE : {}({}) = {} ({}ms)", pjp.getSignature().getDeclaringTypeName(),
-                pjp.getSignature().getName(), result.toString(), endAt-startAt);
+        String className = pjp.getSignature().getDeclaringTypeName();
+        String methodName = pjp.getSignature().getName();
+        long duration = endAt - startAt;
+
+
+        PerformanceLogging logObject = PerformanceLogging.builder()
+                .title("Controller Performance Logging")
+                .classname(className)
+                .methodName(methodName)
+                .executionTime(Duration.ofMillis(duration))
+                .build();
+
+
+        log.info(mapper.writeValueAsString(logObject));
 
         return result;
-
     }
 
-    // get request value
-    private String getRequestParams() {
+    //TODO: title enum으로 바꾸기
+    @Getter
+    static class PerformanceLogging{
+        private String title;
+        private String classname;
+        private String methodName;
+        private Duration executionTime;
 
-        String params = "";
-
-        RequestAttributes requestAttribute = RequestContextHolder.getRequestAttributes();
-
-        if(requestAttribute != null){
-            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-                    .getRequestAttributes()).getRequest();
-
-            Map<String, String[]> paramMap = request.getParameterMap();
-
-            if(!paramMap.isEmpty()) {
-                params = " [" + paramMapToString(paramMap) + "]";
-            }
+        @Builder
+        public PerformanceLogging(String title, String classname, String methodName, Duration executionTime) {
+            this.title = title;
+            this.classname = classname;
+            this.methodName = methodName;
+            this.executionTime = executionTime;
         }
-        return params;
     }
 
-    private String paramMapToString(Map<String, String[]> paramMap) {
-        return paramMap.entrySet().stream()
-                .map(entry -> String.format("%s -> (%s)",
-                        entry.getKey(), Joiner.on(",").join(entry.getValue())))
-                .collect(Collectors.joining(", "));
+    public RequestLoggingAspect(ObjectMapper mapper) {
+        this.mapper = mapper;
     }
 }
