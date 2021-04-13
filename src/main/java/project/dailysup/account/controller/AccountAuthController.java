@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.dailysup.account.service.AccountAuthService;
+import project.dailysup.logging.LogCode;
+import project.dailysup.logging.LogFactory;
 
 @Slf4j
 @RestController
@@ -21,6 +23,7 @@ public class AccountAuthController {
 
     @PostMapping("/log-in")
     public ResponseEntity<?> createToken(@RequestBody LogInRequestDto dto){
+        log.info(LogFactory.create(LogCode.CREATE_TOKEN,dto.getLoginId()));
         String loginId = dto.getLoginId();
         String password = dto.getPassword();
 

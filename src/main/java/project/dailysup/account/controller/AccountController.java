@@ -10,6 +10,8 @@ import project.dailysup.account.domain.Account;
 import project.dailysup.account.dto.*;
 import project.dailysup.account.service.AccountQueryService;
 import project.dailysup.account.service.AccountRegisterService;
+import project.dailysup.logging.LogCode;
+import project.dailysup.logging.LogFactory;
 
 import javax.validation.Valid;
 
@@ -27,6 +29,8 @@ public class AccountController {
 
         Account findAccount =  accountQueryService.findCurrentAccount();
 
+        log.info(LogFactory.create(LogCode.CURR_ACC, findAccount.getLoginId()));
+
         RetrieveAccountDto dto = RetrieveAccountDto.builder()
                 .loginId(findAccount.getLoginId())
                 .nickname(findAccount.getNickname())
@@ -40,6 +44,7 @@ public class AccountController {
     @PostMapping
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequestDto dto) {
 
+        log.info(LogFactory.create(LogCode.SIGN_UP,dto.getLoginId()));
         SignUpResponseDto signUpResponseDto
                 = accountRegisterService.singUp(dto.getLoginId(), dto.getPassword(), dto.getNickname());
 
@@ -50,6 +55,8 @@ public class AccountController {
     @DeleteMapping
     public ResponseEntity<?> withdraw(@RequestBody WithdrawDto dto) {
 
+
+        log.info(LogFactory.create(LogCode.WITHDRAW, dto.getLoginId()));
         LoginIdDto deletedId = accountRegisterService.withdraw(dto.getLoginId(),dto.getPassword());
 
         return ResponseEntity.ok(deletedId);

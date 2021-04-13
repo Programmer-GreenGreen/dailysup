@@ -1,6 +1,5 @@
 package project.dailysup.logging;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.jupiter.api.DisplayName;
@@ -15,20 +14,22 @@ public class LogFactoryTest {
     @DisplayName("create Json Test")
     public void create_json_test() throws Exception{
         //given
-
+        String title = "Controller Performance Logging";
         String className = "testClass";
         String methodName = "testMethod";
         String duration = "123mils";
 
         JsonObject json = new JsonObject();
+        json.addProperty("domain", DomainCode.AOP.toString() );
+        json.addProperty("layer", LayerCode.CONTROLLER.toString());
+        json.addProperty("title", title);
         json.addProperty("className", className);
         json.addProperty("methodName", methodName);
         json.addProperty("duration", duration);
 
         //when
-        String log = LogFactory.createLog(LogCode.PERF_CONT, className, methodName, duration);
-        JsonElement jsonElement = JsonParser.parseString(log);
-        JsonObject logJson = jsonElement.getAsJsonObject();
+        String log = LogFactory.create(LogCode.PERF_CONT, className, methodName, duration);
+        JsonObject logJson = JsonParser.parseString(log).getAsJsonObject();
 
         //then
 
