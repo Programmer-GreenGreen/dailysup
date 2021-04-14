@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.dailysup.file.ImageNotFoundException;
 import project.dailysup.common.exception.FailedFileSaveException;
 import project.dailysup.file.S3Repository;
+import project.dailysup.logging.LogCode;
 
 
 /**

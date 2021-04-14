@@ -14,7 +14,7 @@ public class LogFactoryTest {
     @DisplayName("create Json Test")
     public void create_json_test() throws Exception{
         //given
-        String title = "Controller Performance Logging";
+        Long code = 1L;
         String className = "testClass";
         String methodName = "testMethod";
         String duration = "123mils";
@@ -22,7 +22,7 @@ public class LogFactoryTest {
         JsonObject json = new JsonObject();
         json.addProperty("domain", DomainCode.AOP.toString() );
         json.addProperty("layer", LayerCode.CONTROLLER.toString());
-        json.addProperty("title", title);
+        json.addProperty("code", code.toString());
         json.addProperty("className", className);
         json.addProperty("methodName", methodName);
         json.addProperty("duration", duration);
@@ -34,6 +34,7 @@ public class LogFactoryTest {
         //then
 
         assertTrue(json.equals(logJson));
+
 
     }
 

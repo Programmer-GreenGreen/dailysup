@@ -17,7 +17,7 @@ public class LogFactory {
         List<String> params = logCode.getParams();
         String domain = logCode.getDomain().toString();
         String layer = logCode.getLayer().toString();
-        String title = logCode.getTitle();
+        Long code = logCode.getCode();
 
         /**
          * logCode에 정의된 인자와 넘어온 인자가 다른 경우
@@ -27,12 +27,12 @@ public class LogFactory {
             return "";
         }
 
-        return createJson(domain, layer, title, params, values);
+        return createJson(domain, layer, code, params, values);
     }
 
     private static String createJson(String         domain,
                                      String         layer,
-                                     String         title,
+                                     Long           code,
                                      List<String>   keys,
                                      String[]       values)
     {
@@ -40,7 +40,7 @@ public class LogFactory {
         JsonObject json = new JsonObject();
         json.addProperty("domain",domain);
         json.addProperty("layer",layer);
-        json.addProperty("title",title);
+        json.addProperty("code",code.toString());
 
         /**
          *  로그 별로 상이한 key와 value 를

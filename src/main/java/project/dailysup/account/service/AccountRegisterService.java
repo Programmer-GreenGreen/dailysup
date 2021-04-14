@@ -19,6 +19,7 @@ import project.dailysup.account.exception.DuplicatedAccountException;
 import project.dailysup.account.exception.NotValidWithdrawRequest;
 import project.dailysup.account.exception.UserNotFoundException;
 import project.dailysup.jwt.JwtTokenProvider;
+import project.dailysup.logging.LogFactory;
 import project.dailysup.util.SecurityUtils;
 
 @Slf4j
@@ -44,7 +45,6 @@ public class AccountRegisterService {
                 .build();
 
         accountRepository.save(saveAccount);
-
         return SignUpResponseDto.builder()
                                 .loginId(loginId)
                                 .nickname(nickname)

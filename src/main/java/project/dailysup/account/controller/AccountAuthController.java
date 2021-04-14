@@ -23,12 +23,11 @@ public class AccountAuthController {
 
     @PostMapping("/log-in")
     public ResponseEntity<?> createToken(@RequestBody LogInRequestDto dto){
-        log.info(LogFactory.create(LogCode.CREATE_TOKEN,dto.getLoginId()));
         String loginId = dto.getLoginId();
         String password = dto.getPassword();
-
         String jwtToken = accountAuthService.authAccount(loginId, password);
 
+        log.info(LogFactory.create(LogCode.CREATE_TOKEN,dto.getLoginId()));
         return ResponseEntity.ok(new TokenResponseDto(jwtToken));
     }
 

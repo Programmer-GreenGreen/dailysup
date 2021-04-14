@@ -67,7 +67,7 @@ public class S3Repository {
         String fileName = path + UUID.randomUUID().toString();
         log.info("saved file name : " + fileName);
         try {
-            //withCannedAcl(~.PublicRead) : 해당 파일에 public read 권한 주기.
+            // withCannedAcl(~.PublicRead) : 해당 파일에 public read 권한 주기.
             s3Client.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
                                 .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (Exception e) {

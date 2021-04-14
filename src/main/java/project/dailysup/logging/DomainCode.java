@@ -15,4 +15,5 @@ public enum DomainCode {
     MAIL,
     PUSH,
     UTIL,
+    SECURITY,
 }

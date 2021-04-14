@@ -14,6 +14,8 @@ import project.dailysup.account.domain.Account;
 import project.dailysup.account.domain.AccountRepository;
 import project.dailysup.account.exception.UserNotFoundException;
 import project.dailysup.jwt.NotActivatedException;
+import project.dailysup.logging.LogCode;
+import project.dailysup.logging.LogFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
    private User createDetails(String loginId, Account account) {
       if (!account.getIsActivated()) {
-         log.info("Not Activated Exception occur, " + loginId);
+         log.info(LogFactory.create(LogCode.DEACT_ACC, loginId));
          throw new NotActivatedException(loginId + ": 활성화되어 있지 않습니다.");
       }
       SimpleGrantedAuthority role = new SimpleGrantedAuthority(account.getRole().toString());

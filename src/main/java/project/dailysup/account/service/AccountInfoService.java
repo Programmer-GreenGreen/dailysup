@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import project.dailysup.account.controller.AccountInfoController;
 import project.dailysup.account.domain.Account;
 import project.dailysup.account.domain.AccountRepository;
+import project.dailysup.logging.LogCode;
+import project.dailysup.logging.LogFactory;
 
 @Slf4j
 @Service
@@ -24,21 +26,24 @@ public class AccountInfoService extends AccountBaseService{
     public void changeEmail(AccountInfoController.EmailDto emailDto) {
         Account findAccount = getCurrentAccount();
         findAccount.changeEmail(emailDto.getEmail());
+        log.info(LogFactory.create(LogCode.CG_EMAIL, findAccount.getLoginId()));
     }
 
     public void deleteEmail(){
         Account findAccount = getCurrentAccount();
+        log.info(LogFactory.create(LogCode.DEL_EMAIL, findAccount.getLoginId()));
         findAccount.changeEmail("");
     }
 
     public void changePassword(String oldPassword, String newPassword){
         Account findAccount = getCurrentAccount();
+        log.info(LogFactory.create(LogCode.CG_PW, findAccount.getLoginId()));
         findAccount.changePassword(passwordEncoder, oldPassword, newPassword);
     }
 
     public void changeProfilePicture(MultipartFile profilePicture){
         Account findAccount = getCurrentAccount();
-
+        log.info(LogFactory.create(LogCode.CG_PROFILE, findAccount.getLoginId()));
         String oldProfileUrl = findAccount.getProfilePictureUrl();
 
         if(!StringUtils.hasText(oldProfileUrl)) {
@@ -52,7 +57,7 @@ public class AccountInfoService extends AccountBaseService{
 
     public void deleteProfilePicture(){
         Account findAccount = getCurrentAccount();
-
+        log.info(LogFactory.create(LogCode.DEL_PROFILE, findAccount.getLoginId()));
         String profileUrl = findAccount.getProfilePictureUrl();
 
         if(StringUtils.hasText(profileUrl)) {
@@ -61,14 +66,15 @@ public class AccountInfoService extends AccountBaseService{
     }
 
 
+    public void changeNickname(String nickname) {
+        Account findAccount = getCurrentAccount();
+        log.info(LogFactory.create(LogCode.CHANGE_NICK, findAccount.getLoginId()));
+        findAccount.changeNickname(nickname);
+    }
+
     public AccountInfoService(AccountRepository accountRepository, ProfileFileService profileFileService, PasswordEncoder passwordEncoder) {
         super(accountRepository);
         this.profileFileService = profileFileService;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    public void changeNickname(String nickname) {
-        Account findAccount = getCurrentAccount();
-        findAccount.changeNickname(nickname);
     }
 }

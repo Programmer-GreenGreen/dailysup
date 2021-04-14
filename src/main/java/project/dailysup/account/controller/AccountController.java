@@ -29,8 +29,6 @@ public class AccountController {
 
         Account findAccount =  accountQueryService.findCurrentAccount();
 
-        log.info(LogFactory.create(LogCode.CURR_ACC, findAccount.getLoginId()));
-
         RetrieveAccountDto dto = RetrieveAccountDto.builder()
                 .loginId(findAccount.getLoginId())
                 .nickname(findAccount.getNickname())
@@ -38,16 +36,17 @@ public class AccountController {
                 .profilePictureUrl(findAccount.getProfilePictureUrl())
                 .build();
 
+        log.info(LogFactory.create(LogCode.CURR_ACC, findAccount.getLoginId()));
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping
     public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequestDto dto) {
 
-        log.info(LogFactory.create(LogCode.SIGN_UP,dto.getLoginId()));
         SignUpResponseDto signUpResponseDto
                 = accountRegisterService.singUp(dto.getLoginId(), dto.getPassword(), dto.getNickname());
 
+        log.info(LogFactory.create(LogCode.SIGN_UP,dto.getLoginId()));
         return new ResponseEntity<>(signUpResponseDto, HttpStatus.CREATED);
     }
 
@@ -55,10 +54,9 @@ public class AccountController {
     @DeleteMapping
     public ResponseEntity<?> withdraw(@RequestBody WithdrawDto dto) {
 
-
-        log.info(LogFactory.create(LogCode.WITHDRAW, dto.getLoginId()));
         LoginIdDto deletedId = accountRegisterService.withdraw(dto.getLoginId(),dto.getPassword());
 
+        log.info(LogFactory.create(LogCode.WITHDRAW, dto.getLoginId()));
         return ResponseEntity.ok(deletedId);
     }
 

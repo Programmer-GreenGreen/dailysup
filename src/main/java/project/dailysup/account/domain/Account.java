@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @JsonIgnoreType
 @Getter @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -60,16 +62,14 @@ public class Account extends BaseEntity {
     @Column(nullable = false)
     private Boolean isActivated;
 
-    /**
-     * Unique 하기만 한 빌드들
-     */
 
-    @Column(unique = true)
-    private String email;
+
 
     /**
      * 제약조건 없는 필드들
      */
+
+    private String email;
 
     @Embedded
     private ResetToken resetToken; // 이메일 인증시 발송되는 토큰.

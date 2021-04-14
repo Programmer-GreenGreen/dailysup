@@ -7,12 +7,17 @@ import org.springframework.web.bind.annotation.*;
 import project.dailysup.account.service.AccountInfoService;
 import project.dailysup.account.service.AccountQueryService;
 import project.dailysup.account.service.AccountRegisterService;
+import project.dailysup.logging.LogCode;
+import project.dailysup.logging.LogFactory;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/account/info")
 public class AccountInfoController {
+
+    /**
+     *  Logging 은 서비스에서 한다.
+     */
 
     private final AccountQueryService accountQueryService;
     private final AccountInfoService accountInfoService;
@@ -22,7 +27,7 @@ public class AccountInfoController {
     public ResponseEntity<?> getEmail(){
         String email = accountQueryService.getEmail();
         EmailDto dto = new EmailDto(email);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/email")
