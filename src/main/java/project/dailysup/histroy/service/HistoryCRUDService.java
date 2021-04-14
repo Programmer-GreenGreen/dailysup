@@ -1,6 +1,8 @@
 package project.dailysup.histroy.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.dailysup.histroy.domain.History;
@@ -41,8 +43,12 @@ public class HistoryCRUDService {
     }
 
     public void changeStartDate(Item item, LocalDate startDate){
-        List<History> historyList = historyRepository.findAllByItem(item);
-        historyList.sort(Comparator.comparing(History::getReplacementDate));
-        historyList.get(0).changeReplaceDate(startDate);
+        PageRequest pageRequest = PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "replacementDate"));
+        List<History> history = historyRepository.findAllByItem(item,pageRequest).getContent();
+        if(history.isEmpty()){
+            throw new IllegalStateException("히스토리가 없습니다.");
+        }
+        history.get(0).changeReplaceDate(startDate);
+
     }
 }

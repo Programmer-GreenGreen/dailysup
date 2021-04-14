@@ -20,6 +20,7 @@ public class DeviceQueryService {
     private final AccountBaseService accountBaseService;
     private final DeviceRepository deviceRepository;
 
+    // TODO : Paging Query로 교체
     @Transactional(readOnly = true)
     public List<DeviceDto> findAll(){
         Account currentAccount = accountBaseService.getCurrentAccount();

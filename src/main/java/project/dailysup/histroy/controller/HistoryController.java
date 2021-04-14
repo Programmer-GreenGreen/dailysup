@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,9 @@ public class HistoryController {
     private final HistoryCRUDService historyCRUDService;
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<?> findAllHistory(@PathVariable Long itemId){
-        List<HistoryResponseDto> allHistory = historyQueryService.findAllHistory(itemId);
+    public ResponseEntity<?> findAllHistory(@PathVariable Long itemId, Pageable pageable){
+        Page<HistoryResponseDto> allHistory = historyQueryService.findAllHistory(itemId, pageable)
+                                                        .map(HistoryResponseDto::of);
         return ResponseEntity.ok(allHistory);
     }
 

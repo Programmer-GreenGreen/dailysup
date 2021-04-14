@@ -2,6 +2,10 @@ package project.dailysup.histroy.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.dailysup.histroy.domain.History;
@@ -25,26 +29,25 @@ public class HistoryQueryService {
     private final HistoryRepository historyRepository;
     private final ItemRepository itemRepository;
 
-    public List<HistoryResponseDto> findAllHistory(Long itemId){
-        Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
-        List<History> historyList = historyRepository.findAllByItem(item);
-        return historyList.stream()
-                .map(HistoryResponseDto::of)
-                .collect(Collectors.toList());
+    public Page<History> findAllHistory(Long itemId, Pageable pageable){
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(ItemNotFoundException::new);
+        Page<History> historyPage = historyRepository.findAllByItem(item, pageable);
+
+        return historyPage;
     }
 
     public LocalDate getStartDate(Item item){
-        List<History> historyList = historyRepository.findAllByItem(item);
-        historyList.sort(Comparator.comparing(History::getReplacementDate));
-        LocalDate startDate = historyList.get(0).getReplacementDate();
+        PageRequest pageRequest = PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "replacementDate"));
+        History history = historyRepository.findAllByItem(item,pageRequest).getContent().get(0);
+        LocalDate startDate = history.getReplacementDate();
         return startDate;
     }
 
     public LocalDate getLatestDate(Item item){
-        List<History> historyList = historyRepository.findAllByItem(item);
-        int size = historyList.size();
-        historyList.sort(Comparator.comparing(History::getReplacementDate));
-        LocalDate latestDate = historyList.get(size-1).getReplacementDate();
+        PageRequest pageRequest = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "replacementDate"));
+        History history = historyRepository.findAllByItem(item,pageRequest).getContent().get(0);
+        LocalDate latestDate = history.getReplacementDate();
         return latestDate;
     }
 

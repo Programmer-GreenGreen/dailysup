@@ -23,6 +23,7 @@ public class ItemQueryService {
     private final ItemRepository itemRepository;
     private final HistoryQueryService historyQueryService;
 
+    // TODO : Paging Query로 교체
     public List<ItemResponseDto> findAll() {
 
         String currentAccountId = SecurityUtils.getCurrentLoginId();
