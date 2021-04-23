@@ -1,6 +1,8 @@
 package project.dailysup.device.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.dailysup.account.domain.Account;
@@ -19,13 +21,11 @@ public class DeviceQueryService {
 
     private final AccountBaseService accountBaseService;
     private final DeviceRepository deviceRepository;
-
-    // TODO : Paging Query로 교체
     @Transactional(readOnly = true)
-    public List<DeviceDto> findAll(){
+    public Page<DeviceDto> findAll(Pageable pageable){
         Account currentAccount = accountBaseService.getCurrentAccount();
-        List<Device> devices = deviceRepository.findByAccount(currentAccount);
-        return devices.stream().map(DeviceDto::new).collect(Collectors.toList());
+        Page<Device> devices = deviceRepository.findByAccount(currentAccount, pageable);
+        return devices.map(DeviceDto::new);
     }
     @Transactional(readOnly = true)
     public List<Device> findByAccountList(List<Account> accountList){

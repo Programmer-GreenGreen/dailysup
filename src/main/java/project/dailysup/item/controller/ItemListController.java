@@ -1,6 +1,8 @@
 package project.dailysup.item.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.dailysup.item.dto.*;
@@ -20,10 +22,9 @@ public class ItemListController {
     private final ItemCRUDService itemCRUDService;
 
     @GetMapping
-    public ResponseEntity<?> getItems(){
+    public ResponseEntity<?> getItems(Pageable pageable){
 
-        // TODO: Paging Query 로 변경하기
-        List<ItemResponseDto> all = itemQueryService.findAll();
+        Page<ItemResponseDto> all = itemQueryService.findAll(pageable);
         return ResponseEntity.ok(all);
     }
 

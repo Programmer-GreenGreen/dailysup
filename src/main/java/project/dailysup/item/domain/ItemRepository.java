@@ -15,7 +15,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @EntityGraph(attributePaths = {"account"})
     @Query("select i from Item i where i.account.loginId = :currentAccountId")
-    List<Item> findAllByAccount(@Param("currentAccountId") String currentAccountId);
+    Page<Item> findAllByAccount(@Param("currentAccountId") String currentAccountId, Pageable pageable);
 
     @Query("select i " +
             "from Item i " +

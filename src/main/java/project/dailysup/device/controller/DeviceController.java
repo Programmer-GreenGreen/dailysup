@@ -2,6 +2,9 @@ package project.dailysup.device.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +25,8 @@ public class DeviceController {
     private final DeviceQueryService deviceQueryService;
 
     @GetMapping
-    public ResponseEntity<?> findDevice(){
-        List<DeviceDto> all = deviceQueryService.findAll();
+    public ResponseEntity<?> findDevice(Pageable pageable){
+        Page<DeviceDto> all = deviceQueryService.findAll(pageable);
         return ResponseEntity.ok(all);
     }
 

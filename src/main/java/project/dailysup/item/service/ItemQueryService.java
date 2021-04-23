@@ -1,6 +1,8 @@
 package project.dailysup.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.dailysup.histroy.service.HistoryQueryService;
@@ -23,15 +25,13 @@ public class ItemQueryService {
     private final ItemRepository itemRepository;
     private final HistoryQueryService historyQueryService;
 
-    // TODO : Paging Query로 교체
-    public List<ItemResponseDto> findAll() {
+    public Page<ItemResponseDto> findAll(Pageable pageable) {
 
         String currentAccountId = SecurityUtils.getCurrentLoginId();
-        List<Item> findAllItems = itemRepository.findAllByAccount(currentAccountId);
+        Page<Item> findAllItems = itemRepository.findAllByAccount(currentAccountId, pageable);
 
-        return findAllItems.stream()
-                .map(i -> ItemResponseDto.of(i, historyQueryService.getStartDate(i), historyQueryService.getLatestDate(i)))
-                .collect(Collectors.toList());
+        return findAllItems
+                .map(i -> ItemResponseDto.of(i, historyQueryService.getStartDate(i), historyQueryService.getLatestDate(i)));
     }
 
     public ItemResponseDto findItem(Long itemId){

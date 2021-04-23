@@ -1,5 +1,7 @@
 package project.dailysup.device.domain;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +12,7 @@ import java.util.List;
 public interface DeviceRepository extends JpaRepository<Device, String> {
 
 
-    List<Device> findByAccount(Account account);
+    Page<Device> findByAccount(Account account, Pageable pageable);
 
     @Query("select d from Device d " +
             "join fetch d.account a " +

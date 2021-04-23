@@ -31,19 +31,18 @@ public class AccountInfoService extends AccountBaseService{
 
     public void deleteEmail(){
         Account findAccount = getCurrentAccount();
-        log.info(LogFactory.create(LogCode.DEL_EMAIL, findAccount.getLoginId()));
         findAccount.changeEmail("");
+        log.info(LogFactory.create(LogCode.DEL_EMAIL, findAccount.getLoginId()));
     }
 
     public void changePassword(String oldPassword, String newPassword){
         Account findAccount = getCurrentAccount();
-        log.info(LogFactory.create(LogCode.CG_PW, findAccount.getLoginId()));
         findAccount.changePassword(passwordEncoder, oldPassword, newPassword);
+        log.info(LogFactory.create(LogCode.CG_PW, findAccount.getLoginId()));
     }
 
     public void changeProfilePicture(MultipartFile profilePicture){
         Account findAccount = getCurrentAccount();
-        log.info(LogFactory.create(LogCode.CG_PROFILE, findAccount.getLoginId()));
         String oldProfileUrl = findAccount.getProfilePictureUrl();
 
         if(!StringUtils.hasText(oldProfileUrl)) {
@@ -53,23 +52,24 @@ public class AccountInfoService extends AccountBaseService{
         }else {
             profileFileService.modify(oldProfileUrl, profilePicture);
         }
+        log.info(LogFactory.create(LogCode.CG_PROFILE, findAccount.getLoginId()));
     }
 
     public void deleteProfilePicture(){
         Account findAccount = getCurrentAccount();
-        log.info(LogFactory.create(LogCode.DEL_PROFILE, findAccount.getLoginId()));
         String profileUrl = findAccount.getProfilePictureUrl();
 
         if(StringUtils.hasText(profileUrl)) {
             profileFileService.delete(profileUrl);
         }
+        log.info(LogFactory.create(LogCode.DEL_PROFILE, findAccount.getLoginId()));
     }
 
 
     public void changeNickname(String nickname) {
         Account findAccount = getCurrentAccount();
-        log.info(LogFactory.create(LogCode.CHANGE_NICK, findAccount.getLoginId()));
         findAccount.changeNickname(nickname);
+        log.info(LogFactory.create(LogCode.CHANGE_NICK, findAccount.getLoginId()));
     }
 
     public AccountInfoService(AccountRepository accountRepository, ProfileFileService profileFileService, PasswordEncoder passwordEncoder) {
