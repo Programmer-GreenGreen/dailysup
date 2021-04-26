@@ -19,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/device")
+@RequestMapping("/api/devices")
 public class DeviceController {
     private final DeviceService deviceService;
     private final DeviceQueryService deviceQueryService;

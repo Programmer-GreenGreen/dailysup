@@ -17,15 +17,6 @@ public class AccountForgetController {
 
     private final AccountForgetService accountForgetService;
 
-    @GetMapping("/password")
-    public ResponseEntity<?> validateToken(@RequestBody ResetToken dto){
-
-        Boolean isSuccess = accountForgetService.validateResetToken(dto.getLoginId(), dto.getToken());
-
-        log.info(LogFactory.create(LogCode.VAL_PW_TOKEN,dto.getLoginId(), isSuccess.toString()));
-        return isSuccess ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
-    }
-
     @PostMapping("/password")
     public ResponseEntity<?> forgetPassword(@RequestBody LoginIdDto dto){
 
@@ -42,6 +33,15 @@ public class AccountForgetController {
 
         log.info(LogFactory.create(LogCode.SET_PW,dto.getLoginId()));
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/password/token")
+    public ResponseEntity<?> validateToken(@RequestBody ResetToken dto){
+
+        Boolean isSuccess = accountForgetService.validateResetToken(dto.getLoginId(), dto.getToken());
+
+        log.info(LogFactory.create(LogCode.VAL_PW_TOKEN,dto.getLoginId(), isSuccess.toString()));
+        return isSuccess ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
     }
 
     @Getter

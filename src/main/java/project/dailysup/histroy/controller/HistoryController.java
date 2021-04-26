@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/history")
+@RequestMapping("/api/histories")
 public class HistoryController {
 
     private final HistoryQueryService historyQueryService;
