@@ -9,6 +9,7 @@ import java.util.List;
  * json 타입의 로깅을 object mapper 로 구현하지 않은 이유
  * : 모든 로그마다 클래스를 정의하지 않고 enum 타입 추가만으로 로깅하기 위해
  * : LogFactory 는 factory 패턴을 응용해 log 문자열 생성
+ * 추후 yml 파일로 따로 빼고, Spring Cloud Config 로 관리
  */
 
 public enum LogCode {
