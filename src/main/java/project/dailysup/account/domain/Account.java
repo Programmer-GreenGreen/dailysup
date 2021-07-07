@@ -37,7 +37,7 @@ public class Account extends BaseEntity {
 
     @Id
     @GeneratedValue
-    @Column(name = "acccount_id")
+    @Column(name = "account_id")
     private Long id;
 
     @Column(updatable = false, nullable = false, unique = true)
